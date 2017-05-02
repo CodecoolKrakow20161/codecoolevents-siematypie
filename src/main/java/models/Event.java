@@ -44,4 +44,28 @@ public class Event {
         this.name = name;
     }
 
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public Date getRawDate() {
+        return date;
+    }
+
+    public String getDate(){
+        return dateFormat.format(date);
+    }
+
+    public Integer getId() {
+        return id;
+    }
 }
