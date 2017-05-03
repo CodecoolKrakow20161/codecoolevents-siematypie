@@ -1,7 +1,7 @@
 package controller;
 
 import dao.EventDao;
-import dao.EventDaoHardcoded;
+import dao.EventDaoPostgres;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventController {
-    private static EventDao eventDao = new EventDaoHardcoded();
+    private static EventDao eventDao = new EventDaoPostgres();
 
     public static ModelAndView renderProducts(Request req, Response res) {
         //Get events from database by Dao
