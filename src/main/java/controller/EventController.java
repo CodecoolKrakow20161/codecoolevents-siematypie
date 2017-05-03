@@ -1,6 +1,6 @@
 package controller;
 
-import dao.EventDao;
+import dao.Dao;
 import dao.EventDaoPostgres;
 import spark.ModelAndView;
 import spark.Request;
@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventController {
-    private static EventDao eventDao = new EventDaoPostgres();
+    private static Dao dao = new EventDaoPostgres();
 
     public static ModelAndView renderProducts(Request req, Response res) {
         //Get events from database by Dao
         Map params = new HashMap<>();
-        params.put("eventContainer", eventDao.getAllEvents());
+        params.put("eventContainer", dao.getAll());
         return new ModelAndView(params, "product/index");
     }
 }

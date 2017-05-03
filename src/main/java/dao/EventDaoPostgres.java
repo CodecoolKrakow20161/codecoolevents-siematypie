@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventDaoPostgres implements EventDao {
+public class EventDaoPostgres implements Dao<Event> {
     private Sql2o sql2o;
 
     public EventDaoPostgres() {
         this.sql2o = PostgressConnectionHelper.getDb();
     }
 
-    public void addOrUpdateEvent(Event event){
+    public void addOrUpdate(Event event){
         String insert = "insert into events( name, date, description, category) values (:name, :date, :desc, :cat)";
         String update = "update events set name = :name, date = :date, description=:desc, category=:cat where id=:id";
 
@@ -40,7 +40,7 @@ public class EventDaoPostgres implements EventDao {
     }
 
     @Override
-    public Event getEventById(Integer id) {
+    public Event getById(Integer id) {
         String query = "select * from events where id = :id";
         Table t;
         try (Connection con = sql2o.open()) {
@@ -51,7 +51,7 @@ public class EventDaoPostgres implements EventDao {
     }
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAll() {
         Table t;
         try (Connection con = sql2o.open()) {
             t = con.createQuery("select * from events").executeAndFetchTable();
