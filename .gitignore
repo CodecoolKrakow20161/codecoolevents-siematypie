@@ -12,4 +12,9 @@
 hs_err_pid*
 .idea
 project\.iml
-*/target/**
+.classpath
+.project
+.settings/
+target/
+
+target/classes/templates/product/
