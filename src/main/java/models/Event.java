@@ -9,15 +9,15 @@ public class Event {
     private Integer id;
     private String name;
     private String description;
-    private String category;
+    private Category category;
     private Date date;
 
-    public Event(String name, Date date, String description, String category) {
+    public Event(String name, Date date, String description, Category category) {
         this(name, description, category);
         this.date= date;
     }
 
-    public Event(String name, String stringDate, String description, String category){
+    public Event(String name, String stringDate, String description, Category category){
         this(name, description, category);
         try {
             this.date = dateFormat.parse(stringDate);
@@ -27,18 +27,18 @@ public class Event {
         }
     }
 
-    public Event(int id, String name, String stringDate, String description, String category){
+    public Event(int id, String name, String stringDate, String description, Category category){
         this(name, stringDate, description, category);
         this.id = id;
     }
 
-    public Event(int id, String name, Date Date, String description, String category){
+    public Event(int id, String name, Date Date, String description, Category category){
         this(name, Date, description, category);
         this.id = id;
     }
 
 
-    private Event(String name, String description, String category){
+    private Event(String name, String description, Category category){
         this.description = description;
         this.category = category;
         this.name = name;
@@ -53,7 +53,7 @@ public class Event {
         return description;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 

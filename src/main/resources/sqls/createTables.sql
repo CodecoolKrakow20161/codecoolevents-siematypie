@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS events(
                         name TEXT,
                         date DATE,
                         description TEXT,
-                        category TEXT
+                        categoryId INTEGER
                         );
 
 CREATE TABLE IF NOT EXISTS categories(
