@@ -12,10 +12,9 @@ import java.util.Map;
 public class EventController {
     private static Dao dao = new EventDaoPostgres();
 
-    public static ModelAndView renderProducts(Request req, Response res) {
+     static Map<String,Object> renderEvents(Map<String,Object> params) {
         //Get events from database by Dao
-        Map params = new HashMap<>();
         params.put("eventContainer", dao.getAll());
-        return new ModelAndView(params, "product/index");
+        return params;
     }
 }
