@@ -54,10 +54,10 @@
 
                 <form class="navbar-form navbar-right">
                     <div class="input-group">
-                        <select class="selectpicker" multiple data-live-search="true" data-container="body" data-actions-box="true" title="Filter events by category" data-width="100%">
-                            <option>Mustard</option>
-                            <option>Ketchup</option>
-                            <option>Relish</option>
+                        <select class="selectpicker" multiple data-live-search="true" data-container="body"
+                                data-actions-box="true" title="Filter events by category" data-width="100%">
+                                <option  th:each="cat : ${categoryContainer}"  th:text="${cat.name}">Party</option>
+
                         </select>
                         <div class="input-group-btn">
                             <button class="btn btn-default" type="submit">
@@ -98,7 +98,7 @@
                         <tr th:each="event : ${eventContainer}">
                             <td><a href="#" th:text="${event.name}" th:id="${event.id}">PJUG zjazd javowców</a></td>
                             <td th:text="${event.date}">11-04-93</td>
-                            <td th:text="${event.category}">john@example.asc</td>
+                            <td th:text="${event.category.name}">john@example.asc</td>
                         </tr>
                     </tbody>
                 </table>

@@ -1,5 +1,6 @@
 package dao;
 
+import models.Category;
 import models.Event;
 import org.sql2o.Connection;
 import org.sql2o.Query;
@@ -11,16 +12,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventDaoPostgres implements EventDao {
+public class EventDaoPostgres implements Dao<Event> {
     private Sql2o sql2o;
+    private CategoryDaoPostgres catDao = new CategoryDaoPostgres();
 
     public EventDaoPostgres() {
         this.sql2o = PostgressConnectionHelper.getDb();
     }
 
-    public void addOrUpdateEvent(Event event){
-        String insert = "insert into events( name, date, description, category) values (:name, :date, :desc, :cat)";
-        String update = "update events set name = :name, date = :date, description=:desc, category=:cat where id=:id";
+    public void addOrUpdate(Event event){
+        String insert = "insert into events( name, date, description, categoryId) values (:name, :date, :desc, :catId)";
+        String update = "update events set name = :name, date = :date, description=:desc, categoryId=:catId where id=:id";
 
         Integer eventId = event.getId();
         Query query = null;
@@ -34,13 +36,13 @@ public class EventDaoPostgres implements EventDao {
             query.addParameter("name", event.getName())
             .addParameter("date", event.getRawDate())
             .addParameter("desc", event.getDescription())
-            .addParameter("cat", event.getCategory());
+            .addParameter("catId", event.getCategory().getId());
             query.executeUpdate();
         }
     }
 
     @Override
-    public Event getEventById(Integer id) {
+    public Event getById(Integer id) {
         String query = "select * from events where id = :id";
         Table t;
         try (Connection con = sql2o.open()) {
@@ -51,10 +53,11 @@ public class EventDaoPostgres implements EventDao {
     }
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAll() {
+        String query = "select * from events";
         Table t;
         try (Connection con = sql2o.open()) {
-            t = con.createQuery("select * from events").executeAndFetchTable();
+            t = con.createQuery(query).executeAndFetchTable();
         }
         return getEventsFromTable(t);
     }
@@ -62,11 +65,12 @@ public class EventDaoPostgres implements EventDao {
     private List<Event> getEventsFromTable(Table t){
         List<Event> eventList = new ArrayList<>();
         for (Row r : t.rows()) {
+            System.out.println(r);
             int id = r.getInteger("id");
             String name = r.getString("name");
             Date date = r.getDate("date");
             String description = r.getString("description");
-            String category = r.getString("category");
+            Category category = catDao.getById(r.getInteger("categoryId"));
             eventList.add(new Event(id, name, date, description, category));
         }
         return eventList;
