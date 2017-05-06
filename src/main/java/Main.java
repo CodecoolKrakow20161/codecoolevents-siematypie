@@ -38,6 +38,12 @@ public class Main {
             p.putAllEvents();
             return new ThymeleafTemplateEngine().render( p.getModelAndView("product/index") );
         });
+
+        exception(IllegalArgumentException.class, (e, req, res) -> {
+            res.status(400);
+            res.body(new JsonTransformer().render(new ResponseError(e)));
+        });
+
     }
 
 
