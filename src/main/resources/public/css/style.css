@@ -1,6 +1,6 @@
  
-/* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
-@media (min-width: 768px) {  
+ /*Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+@media (min-width: 768px) {
   h1 {font-size:2rem;} /*1rem = 16px*/
 .input-group{
     max-width:200px;
@@ -61,6 +61,14 @@ h1,h2,h3, p, th, td, .board-label{
     color: whitesmoke;
 }
 
+p{
+    font-size: 2.5rem;
+}
+
+/*th, td{*/
+    /*font-size: 2rem;*/
+/*}*/
+
 .board-input{
     width:100%;
     background-color: transparent;
@@ -69,10 +77,14 @@ h1,h2,h3, p, th, td, .board-label{
     border-bottom: solid;
 }
 
-th {
+th, .white-bg, .blackboard-button{
     background-image: url(../img/Chalky.jpg);
     color:black;
     background-size: contain;
+}
+
+#event-data, #loading{
+    display:none;
 }
 
 table tr th {
@@ -85,6 +97,59 @@ tr:hover > td {
     background-size: contain;
 }
 */
+ .col-centered{
+     float: none;
+     margin: 0 auto;
+ }
+
+ .list-event {
+     display: flex;
+     justify-content: space-between;
+ }
+
+ .color-blk{
+     color: black;
+ }
+ .close-data{
+     color:black;
+     margin-right: 10px;
+     font-size: 2.5em;
+     opacity: 0.7;
+
+ }
+
+ .data-content{
+     padding: 8px;
+     border-top:0;
+     border-style: dashed;
+     border-color: whitesmoke;
+     border-bottom-left-radius: 8px;
+     border-bottom-right-radius: 8px;
+
+ }
+
+ .event-info{
+     min-height: 250px;
+ }
+
+.data-footer{
+    color:whitesmoke;
+    border-top: solid;
+    border-width: 2px;
+    padding-top: 10px;
+}
+
+ .back-anchor:hover{
+     opacity: 1;
+     color:black;
+     text-decoration: underline;
+ }
+
+ .blackboard-button{
+     font-size: 1.5em;
+ }
+
+
 #login-form{
     display: block; 
 }

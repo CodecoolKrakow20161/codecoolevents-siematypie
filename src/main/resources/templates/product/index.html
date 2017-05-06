@@ -81,9 +81,13 @@
         </div>
     </nav>
     <div class="container" id="blackboard">
+        <div id="loading" class="text-center">
+            <img src="img/animal.gif" th:src="@{img/animal.gif}" />
+        </div>
+
         <div class="row">
             <div class="col-sm-12">
-                <div th:switch="${eventContainer.isEmpty()}">
+                <div th:switch="${eventContainer.isEmpty()}" id="event-table">
                     <h1>UPCOMING EVENTS</h1>
                     <h1 th:case="true">There are no declared events yet!</h1>
                     <table th:case="false" class="table">
@@ -96,12 +100,49 @@
                     </thead>
                     <tbody>
                         <tr th:each="event : ${eventContainer}">
-                            <td><a href="#" th:text="${event.name}" th:id="${event.id}">PJUG zjazd javowców</a></td>
+                            <td><a class="event-getter" href="#" th:text="${event.name}" th:id="${event.id}">PJUG zjazd javowców</a></td>
                             <td th:text="${event.date}">11-04-93</td>
                             <td th:text="${event.category.name}">john@example.asc</td>
                         </tr>
                     </tbody>
                 </table>
+                </div>
+                <div id="event-data">
+                    <div class="row">
+                        <div class="col-sm-6 col-centered white-border">
+                            <div class="data-header white-bg">
+                                <button type="button" class="close close-data color-blk data-dismiss" data-dismiss="modal">&times;</button>
+                                <h1 class="text-center color-blk" id="chosen-event-name">EVENT NAME</h1>
+
+                            </div>
+                            <div class = "data-content">
+                                <div class="event-info">
+                                    <ul class="list-inline list-event">
+                                        <li><p id="chosen-event-cat">Category:  Kategoria1</p></li>
+                                        <li> <p id="chosen-event-date">Date: 11/04/93</p></li>
+                                    </ul>
+                                    <!--<h1 class="text-center white-bg" id="chosen-event-name">EVENT NAME</h1>-->
+                                    <!--<h2 class="pull-right white-bg"><span class="glyphicon glyphicon-arrow-left"></span> BACK</h2>-->
+
+                                    <!--<h3 id="chosen-event-cat">Category:  Kategoria1</h3>-->
+                                    <!--<h3 id="chosen-event-date">Date: 11/04/93</h3>-->
+
+                                    <h2 class="text-center">Description:</h2>
+                                    <div id="chosen-event-desc">
+                                        <p>Jest to zajebisty event, pozdrawiam i polecam, Antoni Macierewicz</p>
+                                    </div>
+                                </div>
+                                <div class="data-footer text-center">
+                                    <button class="blackboard-button data-dismiss">
+                                        <span class="glyphicon glyphicon-arrow-left"></span> BACK
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -142,6 +183,38 @@
 
         </div>
     </div>
+
+<script>
+    $( document ).ready(function() {
+
+        $(".event-getter").click(function(){
+            event.preventDefault();
+            var route = "/event/" + this.id;
+            $("#event-table").hide();
+            $("#loading").show();
+
+            $.getJSON( route, function(event) {
+                $("#chosen-event-name").text(event.name);
+                $("#chosen-event-date").text("Date: " + event.date);
+                $("#chosen-event-cat").text("Category: " + event.category.name);
+                $("#chosen-event-desc").html("<p>" + event.description + "</p>");
+                $("#loading").fadeOut(300,function(){
+                    $("#event-data").fadeIn();});
+
+            })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert("ERROR!\n" + jqXHR.responseJSON.message);
+                    location.reload();
+                });
+
+        });
+
+        $(".data-dismiss").click(function(){
+            $("#event-data").hide();
+            $("#event-table").fadeIn();
+        });
+    });
+</script>
 </body>
 
 </html>
