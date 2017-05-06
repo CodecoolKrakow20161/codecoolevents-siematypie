@@ -1,15 +1,16 @@
 package controller;
 
-import dao.Dao;
+import dao.EventDao;
 import dao.EventDaoPostgres;
 import models.Event;
 import utils.JsonTransformer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EventController {
-    private static Dao<Event> dao = new EventDaoPostgres();
+    private static EventDao dao = new EventDaoPostgres();
     private static JsonTransformer jsonTransformer = new JsonTransformer();
 
      static Map<String,Object> getEvents() {
