@@ -5,6 +5,8 @@ import dao.PostgressConnectionHelper;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
+import utils.JsonTransformer;
+import utils.ResponseError;
 
 import  static spark.Spark.*;
 
@@ -14,13 +16,17 @@ public class Main {
     public static void main(String[] args) {
         PostgressConnectionHelper.setDbCon("localhost:5432","event",
                                             "event_owner", "secretpass");
-//        new EventDaoPostgres().addOrUpdateEvent(new Event("beka", "11-04-1993", "desc", "cat"));
-        exception(Exception.class, (e, req, res) -> e.printStackTrace());
+        
         staticFileLocation("/public");
         port(8888);
 
         // Always start with more specific routes
-        get("/hello", (req, res) -> "Hello World");
+        get("/event/:id", "application/json", (req, res) -> {
+            String stringId = req.params(":id");
+            Integer id = Integer.parseInt(stringId);
+            return EventController.getEventJson(id);
+        });
+
 
         // Always add generic routes to the end
 //        get("/", AppController::renderIndex, new ThymeleafTemplateEngine());
@@ -32,6 +38,12 @@ public class Main {
             p.putAllEvents();
             return new ThymeleafTemplateEngine().render( p.getModelAndView("product/index") );
         });
+
+        exception(IllegalArgumentException.class, (e, req, res) -> {
+            res.status(400);
+            res.body(new JsonTransformer().render(new ResponseError(e)));
+        });
+
     }
 
 
