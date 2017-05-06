@@ -3,14 +3,16 @@ package controller;
 import dao.CategoryDaoPostgres;
 import dao.Dao;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CategoryController {
     private static Dao dao = new CategoryDaoPostgres();
 
-    static Map<String,Object> renderCategories(Map<String,Object> params) {
+    static Map<String,Object> getCategories() {
         //Get events from database by Dao
-        params.put("categoryContainer", dao.getAll());
-        return params;
+        HashMap<String, Object> catMap = new HashMap<>();
+        catMap.put("categoryContainer", dao.getAll());
+        return catMap;
     }
 }
