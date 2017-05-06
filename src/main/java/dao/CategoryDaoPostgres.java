@@ -8,7 +8,7 @@ import org.sql2o.Sql2o;
 
 import java.util.List;
 
-public class CategoryDaoPostgres implements Dao<Category> {
+public class CategoryDaoPostgres implements CategoryDao {
     private Sql2o sql2o;
 
     public CategoryDaoPostgres() {

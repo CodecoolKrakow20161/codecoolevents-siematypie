@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventDaoPostgres implements Dao<Event> {
+public class EventDaoPostgres implements EventDao {
     private Sql2o sql2o;
-    private CategoryDaoPostgres catDao = new CategoryDaoPostgres();
+    private CategoryDao catDao = new CategoryDaoPostgres();
 
     public EventDaoPostgres() {
         this.sql2o = PostgressConnectionHelper.getDb();
@@ -62,6 +62,21 @@ public class EventDaoPostgres implements Dao<Event> {
         return getEventsFromTable(t);
     }
 
+    public List<Event> findByName(String searchPhrase){
+        String query = "select * from events where name like '%" + searchPhrase ;
+        if (searchPhrase.length() > 3){
+            query = query  + "%'";
+        } else {
+            query = query + "'";
+        }
+
+        Table t;
+        try (Connection con = sql2o.open()) {
+            t = con.createQuery(query).executeAndFetchTable();
+        }
+        return getEventsFromTable(t);
+    }
+
     private List<Event> getEventsFromTable(Table t){
         List<Event> eventList = new ArrayList<>();
         for (Row r : t.rows()) {
@@ -75,4 +90,5 @@ public class EventDaoPostgres implements Dao<Event> {
         }
         return eventList;
     }
+
 }
