@@ -1,16 +1,10 @@
 import controller.EventController;
-import dao.EventDao;
-import dao.EventDaoPostgres;
+import controller.ParamsMap;
+
 import dao.PostgressConnectionHelper;
-import models.Event;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 import  static spark.Spark.*;
 
@@ -29,10 +23,14 @@ public class Main {
         get("/hello", (req, res) -> "Hello World");
 
         // Always add generic routes to the end
-        get("/", EventController::renderProducts, new ThymeleafTemplateEngine());
+//        get("/", AppController::renderIndex, new ThymeleafTemplateEngine());
+
         // Equivalent with above
-        get("/index", (Request req, Response res) -> {
-            return new ThymeleafTemplateEngine().render( EventController.renderProducts(req, res) );
+        get("/", (Request req, Response res) -> {
+            ParamsMap p = new ParamsMap();
+            p.putAllCategories();
+            p.putAllEvents();
+            return new ThymeleafTemplateEngine().render( p.getModelAndView("product/index") );
         });
     }
 
