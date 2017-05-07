@@ -20,7 +20,15 @@ public class Main {
         staticFileLocation("/public");
         port(8888);
 
+        get("/event/all", "application/json", (req, res) -> EventController.getAllEventsJson());
+
         // Always start with more specific routes
+        get("/event/find/:searchPhrase", "application/json", (req, res) -> {
+            String searchPhrase = req.params(":searchPhrase");
+            return EventController.findAndReturnJson(searchPhrase);
+        });
+
+
         get("/event/:id", "application/json", (req, res) -> {
             String stringId = req.params(":id");
             Integer id = Integer.parseInt(stringId);

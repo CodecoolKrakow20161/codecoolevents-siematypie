@@ -21,7 +21,7 @@ public class CategoryDaoPostgres implements CategoryDao {
         String update = "update categories set name = :name where id=:id";
 
         Integer categoryId = category.getId();
-        Query query = null;
+        Query query;
         try (Connection con = sql2o.open()) {
             if (categoryId != null){
                 query = con.createQuery(update);
