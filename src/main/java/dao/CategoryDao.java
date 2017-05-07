@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface CategoryDao{
      void addOrUpdate(Category category);
+     Category addAndReturn(Category category);
      Category getById(Integer id);
      List<Category> getAll();
 }

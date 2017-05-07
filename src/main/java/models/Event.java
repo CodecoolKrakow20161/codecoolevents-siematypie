@@ -39,11 +39,20 @@ public class Event {
 
 
     private Event(String name, String description, Category category){
+        validate(name, description);
         this.description = description;
         this.category = category;
         this.name = name;
     }
 
+    private void validate(String name, String description){
+        if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Event name cannot be empty");
+        }
+        if (description.replaceAll(" ", "").equals("") || description.isEmpty()){
+            throw new IllegalArgumentException("Event description cannot be empty");
+        }
+    }
 
     public String getName() {
         return name;

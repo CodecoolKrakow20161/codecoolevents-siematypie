@@ -32,8 +32,14 @@
 <body>
     <div class="jumbotron">
         <h1 class="text-center">Codecool event Manager</h1>
-
-
+        <div class="text-center">
+        <div class="list-inline">
+            <li><button type="button" class="btn btn-lg btn-primary" id="add-event-btn">ADD EVENT</button></li>
+            <li><button type="button" class="btn btn-lg btn-success">EDIT EVENT</button></li>
+            <li><button type="button" class="btn btn-lg btn-danger">DELETE EVENT</button></li>
+        </div>
+        </div>
+        <!--<button class="btn btn-primary btn-lg pull-right" id="add-event-button">Add event</button>-->
     </div>
 
     <nav class="navbar navbar-default navbar-fixed-bottom">
@@ -140,12 +146,72 @@
                                         <span class="glyphicon glyphicon-arrow-left"></span> BACK
                                     </button>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
+                </div>
 
+                <div class="dismissable" id="admin-board">
+                    <div class="row">
+                        <div class="col-sm-6 col-centered white-border">
+                            <div class="data-header white-bg">
+                                <button type="button" class="close close-data color-blk data-dismiss">&times;</button>
+                                <h1 class="text-center color-blk" id="action-name">ADD NEW EVENT</h1>
+
+                            </div>
+                                <div class="input-area">
+                                    <form id="event-form" method="post" action="/event/add">
+                                        <div class="form-group">
+                                            <label for="name-input" class="board-label">NAME:</label>
+                                            <input type="text" id="name-input" class="board-input"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="date-input" class="board-label">DATE:</label>
+                                            <input type="date" id="date-input" class="board-input">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="desc-input" class="board-label">DESCRIPTION:</label>
+                                            <textarea rows="4" cols="50" id="desc-input" class="board-input-solid">
+                                        </textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <ul class="list-inline">
+                                                <li><label for="categories" class="board-label">Category:</label></li>
+                                                <li><button type="button" data-toggle="collapse" data-target="#category-form" id="add-cat-btn" class="btn btn-success btn-sm"> add new</button></li>
+                                            </ul>
+                                            <select id="categories" class="board-input">
+                                                <option class="category-picker color-blk"  th:each="cat : ${categoryContainer}"  th:text="${cat.name}" th:value="${cat.id}">Party</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button class="btn btn-primary btn-lg submit-event center-block">Add event</button>
+                                        </div>
+
+                                    </form>
+                                    <div id="category-form" class="collapse">
+                                        <h2 class="text-center white-bg">Add new category</h2>
+                                        <form id="add-category" method="post" action="/category/add" >
+                                            <div class="form-group">
+                                                <label for="cat-name-input" class="board-label">Category name:</label>
+                                                <input type="text" id="cat-name-input" class="board-input"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <button class="btn btn-success btn-sm submit-category center-block">Add category</button>
+                                            </div>
+                                        </form>
+                                </div>
+                                <div class="data-footer text-center">
+                                    <button class="blackboard-button data-dismiss">
+                                        <span class="glyphicon glyphicon-arrow-left"></span> BACK
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -174,7 +240,6 @@
                                     <br/>
                                     <button type="button" class="btn btn-default btn-lg">Log in!</button>
                                 </div>
-
                             </form>
                         </div>
                     </div>
@@ -197,7 +262,10 @@
         var $alertBox = $("#message-box");
         var $searchBox = $('#search-box');
         var $filterMenu = $('#filter-menu');
-//
+        var $adminBoard = $("#admin-board");
+        var $categoryForm = $("#add-category");
+        var $eventForm = $("#event-form");
+
         $filterMenu.change(function () {
             var $button = $("#filter-button");
             var selectedOptions = $(this).find("option:selected");
@@ -208,9 +276,61 @@
             }
         });
 
+        $('#add-event-btn').click(function () {
+            $currentlyOpened.hide();
+            $adminBoard.showAsCurrent();
+        });
+
+        $('#add-cat-btn').click(function () {
+            var body = $("body");
+            setTimeout(function(){
+                body.animate({scrollTop:$adminBoard.prop("scrollHeight")}, 500, 'swing');
+                $("#cat-name-input").focus();
+            }, 200);
+        });
+
+        $categoryForm.submit(function () {
+            event.preventDefault();
+            var url = $(this).attr("action");
+            $.post(url, {name: $('#cat-name-input').val()}).done(function (data) {
+                var category = jQuery.parseJSON( data );
+                var categorySelect = $("#categories");
+                categorySelect.find("option:selected").removeAttr("selected");
+                categorySelect.append("<option value='"+category.id +"' selected>"+ category.name +"</option>");
+                $("#cat-name-input").val("");
+                $('#add-cat-btn').click();
+                var alertMsg = "Category " + category.name + " successfully added!";
+                var $alertDiv = generateAlert("success",alertMsg);
+                $alertDiv.appendToAlertBox(alertFadeOutTimer);
+
+            },"json")
+            .fail(function(jqXHR) {
+                alert("ERROR!\n" + jQuery.parseJSON( jqXHR.responseText ).message);
+                return false;
+            });
+        });
+
+        $eventForm.submit(function(){
+            event.preventDefault();
+            $currentlyOpened.hideToLoader();
+            var url = $(this).attr("action");
+            $.post(url, createFormJson()).done(function (data) {
+                var $alertDiv = generateAlert("success", data);
+                showAllEvents($alertDiv);
+            },"json")
+                .fail(function(jqXHR) {
+                    var alertMsg = jQuery.parseJSON( jqXHR.responseText ).message;
+                    var $alertDiv = generateAlert("danger",alertMsg);
+                    $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
+                    return false;
+                });
+        });
+
+
+
         $('#filter-button').click(function () {
             var allCategories = $("option.filter-opt");
-            var selectedOptions = $filterMenu.find("option:selected")
+            var selectedOptions = $filterMenu.find("option:selected");
             var selectedValues = selectedOptions.map(function () {
                 return $(this).val();
             }).get();
@@ -413,6 +533,15 @@
             $tableBody.append(row);
         });
     }
+
+    function createFormJson(){
+        return {name: $('#name-input').val(),
+                date: $("#date-input").val(),
+                desc: $("#desc-input").val(),
+                catId: $("#categories").find("option:selected").val()
+        }
+    }
+
 
 
 

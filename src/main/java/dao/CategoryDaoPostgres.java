@@ -4,9 +4,11 @@ import models.Category;
 import org.sql2o.Connection;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
+import org.sql2o.Sql2oException;
 
 
 import java.util.List;
+import java.util.Locale;
 
 public class CategoryDaoPostgres implements CategoryDao {
     private Sql2o sql2o;
@@ -31,6 +33,17 @@ public class CategoryDaoPostgres implements CategoryDao {
             }
             query.addParameter("name", category.getName());
             query.executeUpdate();
+        } catch (Sql2oException e){
+            throw new IllegalArgumentException("Category name '" + category.getName() + "' id already taken");
+        }
+    }
+
+    public Category addAndReturn(Category category){
+        String insert = "insert into categories(name) values (:name) RETURNING name, id;";
+        try(Connection con = sql2o.open()) {
+            return con.createQuery(insert).addParameter("name", category.getName()).executeAndFetchFirst(Category.class);
+        }  catch (Sql2oException e){
+            throw new IllegalArgumentException("Category name '" + category.getName() + "' id already taken");
         }
     }
 

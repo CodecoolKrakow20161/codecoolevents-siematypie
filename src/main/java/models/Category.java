@@ -10,6 +10,9 @@ public class Category {
     }
 
     public Category(String name){
+        if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Parameter 'name' cannot be empty");
+        }
         this.name = name;
     }
 
