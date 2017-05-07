@@ -189,34 +189,183 @@
 
 <script>
     $( document ).ready(function() {
+        var $eventData = $("#event-data");
+        var $table = $("#event-table");
+        var $currentlyOpened = $table;
+        var $loader = $("#loading");
+        var $alertBox = $("#message-box");
+        var $searchBox = $('#search-box');
+//
+        $('#filter-menu').change(function () {
+            var selectedText = $(this).find("option:selected");
+            $.each(selectedText, function (index, event) {
+                alert(event.text);
+            });
+        });
 
-        $(".event-getter").click(function(){
+        $("#event-table-body").on("click",".event-getter", function(){
             event.preventDefault();
             var route = "/event/" + this.id;
-            $("#event-table").hide();
-            $("#loading").show();
+            $currentlyOpened.hideToLoader();
 
             $.getJSON( route, function(event) {
-                $("#chosen-event-name").text(event.name);
-                $("#chosen-event-date").text("Date: " + event.date);
-                $("#chosen-event-cat").text("Category: " + event.category.name);
-                $("#chosen-event-desc").html("<p>" + event.description + "</p>");
-                $("#loading").fadeOut(300,function(){
-                    $("#event-data").fadeIn();});
+                populateEventData(event);
+
+                $eventData.fadeFromLoader();
 
             })
                 .fail(function(jqXHR, textStatus, errorThrown) {
                     alert("ERROR!\n" + jqXHR.responseJSON.message);
                     location.reload();
                 });
+        });
 
+        $("#filter-well").on("click",".back-anchor", function(){
+            event.preventDefault();
+            var route = "/event/all";
+            $currentlyOpened.hideToLoader();
+
+            $.getJSON( route, function(data) {
+                populateEventTable(data);
+                $("#filter-well").html("");
+                $table.fadeFromLoader();
+            })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert("ERROR!\n" + jqXHR.responseJSON.message);
+                    location.reload();
+                });
+        });
+
+        $searchBox.on('keydown', function (e) {
+            var $button = $("#search-button");
+            if (e.which === 13 && $(this).val()) {
+                $button.click();
+                e.preventDefault();
+                return false;
+
+            }
+            setTimeout(function () {   //calls click event after a certain time;
+                if ($searchBox.val()){
+                    $button.prop('disabled', false);
+                } else {
+                    $button.prop('disabled', true);
+                }
+            }, 100);
+
+        });
+
+        $("#search-button").click(function(){
+            var searchPhrase = $searchBox.val();
+            var alertFadeOutTimer = 3000;
+            var route = "/event/find/" + searchPhrase;
+            $searchBox.val('');
+            $(this).prop('disabled', true);
+            var msg = "";
+            var $alertDiv = "";
+            event.preventDefault();
+
+            $currentlyOpened.hideToLoader();
+            $.getJSON( route, function(data) {
+                $(".search-result").remove();
+                if(data.length === 0){
+                    msg = "Sorry, but nothing matches your search query! :(";
+                    $alertDiv = generateAlert("danger", msg, "search-result");
+                    $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
+
+                } else if (data.length === 1){
+                    msg = "Found 1 match for your search query '" + searchPhrase + "'!";
+                    $alertDiv = generateAlert("success", msg, "search-result");
+                    populateEventData(data[0]);
+                    $eventData.fadeFromLoader($alertDiv, alertFadeOutTimer);
+                } else {
+                    msg = "Found " + data.length +" matches for your search query '" + searchPhrase + "'!";
+                    var wellMsg = "Showing results for your seach query '" + searchPhrase + "'";
+                    $alertDiv = generateAlert("success", msg, "search-result");
+                    populateEventTable(data);
+                    $("#filter-well").html(generateFilterWell(wellMsg));
+                    $table.fadeFromLoader($alertDiv, alertFadeOutTimer);
+                }
+            })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert("ERROR!\n" + jqXHR.responseJSON.message);
+                    location.reload();
+                });
+            return false;
         });
 
         $(".data-dismiss").click(function(){
-            $("#event-data").hide();
-            $("#event-table").fadeIn();
+            $(this).closest(".dismissable").hide();
+            $table.showAsCurrent();
         });
+
+        $.fn.showAsCurrent = function() {
+            this.fadeIn();
+            $currentlyOpened = $(this);
+        };
+
+        $.fn.hideToLoader = function() {
+            this.hide();
+            $loader.show();
+        };
+
+        $.fn.fadeFromLoader = function(alertDiv, timeout) {
+            var $currentNode = $(this);
+            $loader.fadeOut(300,function(){
+                $currentNode.showAsCurrent();
+                if (alertDiv){
+                    alertDiv.appendToAlertBox(timeout)
+                }
+            });
+        };
+
+        $.fn.appendToAlertBox = function(timeout) {
+            $(this).appendTo($alertBox);
+            if (timeout){
+                var alert = $(this);
+                setTimeout(function(){
+                    alert.fadeOut(1000, function() { $(this).remove(); });
+                }, timeout);
+            }
+        };
     });
+
+    function populateEventData(event) {
+        $("#chosen-event-name").text(event.name);
+        $("#chosen-event-date").text("Date: " + event.date);
+        $("#chosen-event-cat").text("Category: " + event.category.name);
+        $("#chosen-event-desc").html("<p>" + event.description + "</p>");
+    }
+
+    function generateAlert(alertClass, msg, additionalClass){
+        html = "<div class='alert alert-" + alertClass + " alert-dismissable fade in " + additionalClass +
+            "'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
+            msg + "</div>";
+        return $(html);
+    }
+
+    function generateRow(event) {
+        return "<tr class='event-row'><td><a class='event-getter' href='#' id='" + event.id + "'>" + event.name + "</a></td>" +
+               "<td>" + event.date + "</td>" +
+               "<td>" + event.category.name + "</td></tr>"
+    }
+
+    function generateFilterWell(msg) {
+        var html = "<p>"+ msg +"</p> <a href='#' class='back-anchor'>Take me back</a>";
+        $("#filter-well").html(html);
+    }
+
+    function populateEventTable(eventArray){
+        $(".event-row").remove();
+        var $tableBody = $("#event-table-body");
+        $.each(eventArray, function (index, event) {
+            var row = generateRow(event);
+            $tableBody.append(row);
+        });
+    }
+
+
+
+
 </script>
 </body>
 
