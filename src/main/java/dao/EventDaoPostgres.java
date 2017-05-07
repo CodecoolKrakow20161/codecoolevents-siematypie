@@ -1,4 +1,4 @@
-
+package dao;
 
 import models.Category;
 import models.Event;
