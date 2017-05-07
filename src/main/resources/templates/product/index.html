@@ -54,13 +54,13 @@
 
                 <form class="navbar-form navbar-right">
                     <div class="input-group">
-                        <select class="selectpicker" multiple data-live-search="true" data-container="body"
+                        <select class="selectpicker" id="filter-menu" multiple data-live-search="true" data-container="body"
                                 data-actions-box="true" title="Filter events by category" data-width="100%">
-                                <option  th:each="cat : ${categoryContainer}"  th:text="${cat.name}">Party</option>
+                                <option class="filter-opt"  th:each="cat : ${categoryContainer}"  th:text="${cat.name}" th:value="${cat.id}">Party</option>
 
                         </select>
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit">
+                            <button class="btn btn-default" id="filter-button" type="submit" disabled>
                                 <i class="glyphicon glyphicon-search"></i>
                             </button>
                         </div>
@@ -189,18 +189,67 @@
 
 <script>
     $( document ).ready(function() {
+        var alertFadeOutTimer = 3000;
         var $eventData = $("#event-data");
         var $table = $("#event-table");
         var $currentlyOpened = $table;
         var $loader = $("#loading");
         var $alertBox = $("#message-box");
         var $searchBox = $('#search-box');
+        var $filterMenu = $('#filter-menu');
 //
-        $('#filter-menu').change(function () {
-            var selectedText = $(this).find("option:selected");
-            $.each(selectedText, function (index, event) {
-                alert(event.text);
-            });
+        $filterMenu.change(function () {
+            var $button = $("#filter-button");
+            var selectedOptions = $(this).find("option:selected");
+            if (selectedOptions.length > 0){
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', true);
+            }
+        });
+
+        $('#filter-button').click(function () {
+            var allCategories = $("option.filter-opt");
+            var selectedOptions = $filterMenu.find("option:selected")
+            var selectedValues = selectedOptions.map(function () {
+                return $(this).val();
+            }).get();
+            var selectedNames = selectedOptions.map(function () {
+                return this.text;
+            }).get();
+
+            $currentlyOpened.hideToLoader();
+            var msg = "";
+            if (allCategories.length === selectedOptions.length){
+                msg = "Showing events from all categories";
+                var $alertDiv = generateAlert("success", msg, "search-result");
+                showAllEvents($alertDiv);
+            } else{
+                $.ajax({
+                    type: "POST",
+                    url: "/event/filter",
+                    data: JSON.stringify(selectedValues),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data){
+                        if (data.length === 0){
+                            msg = "Sorry, but categories you have chosen currently have no events! :(";
+                            $alertDiv = generateAlert("danger", msg, "search-result");
+                            $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
+                        } else {
+                            var wellMsg = "Showing events from following categories: " + selectedNames.join(", ");
+                            populateEventTable(data);
+                            $("#filter-well").html(generateFilterWell(wellMsg));
+                            $table.fadeFromLoader();
+                        }
+                    },
+                    failure: function(errMsg) {
+                        alert(errMsg);
+                    }
+                });
+            }
+            $filterMenu.selectpicker('deselectAll');
+            event.preventDefault();
         });
 
         $("#event-table-body").on("click",".event-getter", function(){
@@ -210,7 +259,6 @@
 
             $.getJSON( route, function(event) {
                 populateEventData(event);
-
                 $eventData.fadeFromLoader();
 
             })
@@ -221,19 +269,7 @@
         });
 
         $("#filter-well").on("click",".back-anchor", function(){
-            event.preventDefault();
-            var route = "/event/all";
-            $currentlyOpened.hideToLoader();
-
-            $.getJSON( route, function(data) {
-                populateEventTable(data);
-                $("#filter-well").html("");
-                $table.fadeFromLoader();
-            })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert("ERROR!\n" + jqXHR.responseJSON.message);
-                    location.reload();
-                });
+            showAllEvents();
         });
 
         $searchBox.on('keydown', function (e) {
@@ -256,7 +292,6 @@
 
         $("#search-button").click(function(){
             var searchPhrase = $searchBox.val();
-            var alertFadeOutTimer = 3000;
             var route = "/event/find/" + searchPhrase;
             $searchBox.val('');
             $(this).prop('disabled', true);
@@ -292,6 +327,22 @@
                 });
             return false;
         });
+
+        function showAllEvents(msg) {
+            event.preventDefault();
+            var route = "/event/all";
+            $currentlyOpened.hideToLoader();
+
+            $.getJSON( route, function(data) {
+                populateEventTable(data);
+                $("#filter-well").html("");
+                $table.fadeFromLoader(msg,alertFadeOutTimer);
+            })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert("ERROR!\n" + jqXHR.responseJSON.message);
+                    location.reload();
+                });
+        }
 
         $(".data-dismiss").click(function(){
             $(this).closest(".dismissable").hide();

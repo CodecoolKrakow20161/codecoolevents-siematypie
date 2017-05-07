@@ -65,18 +65,31 @@ public class EventDaoPostgres implements EventDao {
     public List<Event> findByName(String searchPhrase){
         searchPhrase = searchPhrase.replace("'", "''");
         String query = "select * from events where lower(name) like lower('";
-        if (searchPhrase.length() > 3){
+        if (searchPhrase.length() < 3){
             query = query + searchPhrase ;
         } else {
             query = query + "%" + searchPhrase;
         }
         query = query + "%')";
+        System.out.println(query);
 
         Table t;
         try (Connection con = sql2o.open()) {
             t = con.createQuery(query).executeAndFetchTable();
         }
         return getEventsFromTable(t);
+    }
+
+    @Override
+    public List<Event> getFiltered(List<Integer> catIds) {
+        String str = catIds.toString();
+        String query = "select * from events where categoryId in (" + str.substring(1,str.length() -1) + ")";
+        Table t;
+        try (Connection con = sql2o.open()) {
+            t = con.createQuery(query).executeAndFetchTable();
+        }
+        return getEventsFromTable(t);
+
     }
 
     private List<Event> getEventsFromTable(Table t){
