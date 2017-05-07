@@ -8,6 +8,8 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import utils.JsonTransformer;
 import utils.ResponseError;
 
+import java.util.List;
+
 import  static spark.Spark.*;
 
 
@@ -19,6 +21,11 @@ public class Main {
         
         staticFileLocation("/public");
         port(8888);
+
+        post("/event/filter", ((req, res) -> {
+            List<Integer> lst = new JsonTransformer().parseToList(req.body(), Integer.class);
+            return EventController.getFilteredEvents(lst);
+        }));
 
         get("/event/all", "application/json", (req, res) -> EventController.getAllEventsJson());
 
