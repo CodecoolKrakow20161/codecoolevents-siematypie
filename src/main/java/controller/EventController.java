@@ -27,4 +27,13 @@ public class EventController {
         }
         return jsonTransformer.render(event);
     }
+
+    public static String findAndReturnJson(String searchPhrase){
+        List<Event> foundEvents = dao.findByName(searchPhrase);
+        return jsonTransformer.render(foundEvents);
+    }
+
+    public static String getAllEventsJson(){
+        return jsonTransformer.render(dao.getAll());
+    }
 }
