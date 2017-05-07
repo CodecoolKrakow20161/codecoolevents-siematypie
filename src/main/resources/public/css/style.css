@@ -1,25 +1,20 @@
- 
- /*Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
-@media (min-width: 768px) {
-  h1 {font-size:2rem;} /*1rem = 16px*/
-.input-group{
-    max-width:200px;
-}
-}
+
  
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) { 
-  h1 {font-size:2.5rem;} /*1rem = 16px*/
+@media (min-width: 992px) {
     .input-group{
     max-width:200px;
-}
+    }
+    p,th,td, .board-label, .board-input, .back-anchor {font-size:2.5rem;}
+    .alert{
+        font-size: 2rem;
+    }
 }
  
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {  
   h1 {font-size:5rem;} /*1rem = 16px*/
     h4 {font-size: 3rem;}
-    p,th,td, .board-label, .board-input {font-size:2.5rem;}
 .input-group{
     max-width:200px;
 }
@@ -83,10 +78,15 @@ th, .white-bg, .blackboard-button{
     background-size: contain;
 }
 
+
 #event-data, #loading{
     display:none;
 }
 
+#add-event-button{
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
 table tr th {
   width: 25%;
 }
@@ -132,18 +132,19 @@ tr:hover > td {
      min-height: 250px;
  }
 
+ #filter-well{
+     border-style: dashed;
+     border-color: whitesmoke;
+     border-radius: 8px;
+     margin-bottom: 20px;
+ }
+
 .data-footer{
     color:whitesmoke;
     border-top: solid;
     border-width: 2px;
     padding-top: 10px;
 }
-
- .back-anchor:hover{
-     opacity: 1;
-     color:black;
-     text-decoration: underline;
- }
 
  .blackboard-button{
      font-size: 1.5em;

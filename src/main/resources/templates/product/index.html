@@ -68,15 +68,14 @@
                 </form>
                 <form class="navbar-form navbar-right">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search">
+                        <input type="text" class="form-control" id="search-box" placeholder="Search">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit">
+                            <button class="btn btn-default" id="search-button" disabled>
                                 <i class="glyphicon glyphicon-search"></i>
                             </button>
                         </div>
                     </div>
                 </form>
-
             </div>
         </div>
     </nav>
@@ -85,10 +84,14 @@
             <img src="img/animal.gif" th:src="@{img/animal.gif}" />
         </div>
 
+        <div id="message-box"></div>
+
         <div class="row">
             <div class="col-sm-12">
-                <div th:switch="${eventContainer.isEmpty()}" id="event-table">
+                <div th:switch="${eventContainer.isEmpty()}" id="event-table" class="hide-on-ajax">
                     <h1>UPCOMING EVENTS</h1>
+                    <div id="filter-well" class="text-center">
+                    </div>
                     <h1 th:case="true">There are no declared events yet!</h1>
                     <table th:case="false" class="table">
                     <thead>
@@ -98,8 +101,8 @@
                             <th>Category</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="event : ${eventContainer}">
+                    <tbody id="event-table-body">
+                        <tr class="event-row" th:each="event : ${eventContainer}">
                             <td><a class="event-getter" href="#" th:text="${event.name}" th:id="${event.id}">PJUG zjazd javowców</a></td>
                             <td th:text="${event.date}">11-04-93</td>
                             <td th:text="${event.category.name}">john@example.asc</td>
@@ -107,11 +110,11 @@
                     </tbody>
                 </table>
                 </div>
-                <div id="event-data">
+                <div class="dismissable" id="event-data">
                     <div class="row">
                         <div class="col-sm-6 col-centered white-border">
                             <div class="data-header white-bg">
-                                <button type="button" class="close close-data color-blk data-dismiss" data-dismiss="modal">&times;</button>
+                                <button type="button" class="close close-data color-blk data-dismiss">&times;</button>
                                 <h1 class="text-center color-blk" id="chosen-event-name">EVENT NAME</h1>
 
                             </div>
