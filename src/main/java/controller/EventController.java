@@ -36,4 +36,8 @@ public class EventController {
     public static String getAllEventsJson(){
         return jsonTransformer.render(dao.getAll());
     }
+
+    public static String getFilteredEvents(List<Integer> categoryIds){
+        return jsonTransformer.render(dao.getFiltered(categoryIds));
+    }
 }
