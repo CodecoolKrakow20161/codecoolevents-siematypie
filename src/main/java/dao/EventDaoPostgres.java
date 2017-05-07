@@ -79,6 +79,18 @@ public class EventDaoPostgres implements EventDao {
         return getEventsFromTable(t);
     }
 
+    @Override
+    public List<Event> getFiltered(List<Integer> catIds) {
+        String str = catIds.toString();
+        String query = "select * from events where categoryId in (" + str.substring(1,str.length() -1) + ")";
+        Table t;
+        try (Connection con = sql2o.open()) {
+            t = con.createQuery(query).executeAndFetchTable();
+        }
+        return getEventsFromTable(t);
+
+    }
+
     private List<Event> getEventsFromTable(Table t){
         List<Event> eventList = new ArrayList<>();
         for (Row r : t.rows()) {

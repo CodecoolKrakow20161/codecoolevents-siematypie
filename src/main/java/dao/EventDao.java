@@ -9,4 +9,5 @@ public interface EventDao{
      Event getById(Integer id);
      List<Event> getAll();
      List<Event> findByName(String searchPhrase);
+     List<Event> getFiltered(List<Integer> catIds);
 }
