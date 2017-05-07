@@ -1,4 +1,4 @@
-package dao;
+
 
 import models.Category;
 import models.Event;
@@ -65,12 +65,13 @@ public class EventDaoPostgres implements EventDao {
     public List<Event> findByName(String searchPhrase){
         searchPhrase = searchPhrase.replace("'", "''");
         String query = "select * from events where lower(name) like lower('";
-        if (searchPhrase.length() > 3){
+        if (searchPhrase.length() < 3){
             query = query + searchPhrase ;
         } else {
             query = query + "%" + searchPhrase;
         }
         query = query + "%')";
+        System.out.println(query);
 
         Table t;
         try (Connection con = sql2o.open()) {
