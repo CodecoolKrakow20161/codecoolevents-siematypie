@@ -54,13 +54,13 @@
 
                 <form class="navbar-form navbar-right">
                     <div class="input-group">
-                        <select class="selectpicker" multiple data-live-search="true" data-container="body"
+                        <select class="selectpicker" id="filter-menu" multiple data-live-search="true" data-container="body"
                                 data-actions-box="true" title="Filter events by category" data-width="100%">
-                                <option  th:each="cat : ${categoryContainer}"  th:text="${cat.name}">Party</option>
+                                <option class="filter-opt"  th:each="cat : ${categoryContainer}"  th:text="${cat.name}" th:value="${cat.id}">Party</option>
 
                         </select>
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit">
+                            <button class="btn btn-default" id="filter-button" type="submit" disabled>
                                 <i class="glyphicon glyphicon-search"></i>
                             </button>
                         </div>
