@@ -48,17 +48,28 @@ public class EventController {
     }
 
     public static void addEvent(String name, String stringDate, String description, Category category){
+
+        Event eventToAdd = new Event(name, parseDate(stringDate), description, category);
+        dao.addOrUpdate(eventToAdd);
+    }
+
+    public static void updateEvent(Integer id, String name, String stringDate, String description, Category category){
+        parseDate(stringDate);
+        Event eventToAdd = new Event(id, name, parseDate(stringDate), description, category);
+        dao.addOrUpdate(eventToAdd);
+    }
+
+    private static Date parseDate(String stringDate){
         Date date;
         try {
-           date = dateFormat.parse(stringDate);
+            date = dateFormat.parse(stringDate);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Invalid date format!");
         }
         if (date.before(new Date())){
             throw new IllegalArgumentException("Event date has to be in the future");
         }
-        Event eventToAdd = new Event(name, date, description, category);
-        dao.addOrUpdate(eventToAdd);
+        return date;
     }
 
     public static void deleteEvent(Integer eventId){
