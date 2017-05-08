@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).ready(function () {
     var alertFadeOutTimer = 3000;
     var $eventData = $("#event-data");
     var $table = $("#event-table");
@@ -18,7 +18,7 @@ $( document ).ready(function() {
     $filterMenu.change(function () {
         var $button = $("#filter-button");
         var selectedOptions = $(this).find("option:selected");
-        if (selectedOptions.length > 0){
+        if (selectedOptions.length > 0) {
             $button.prop('disabled', false);
         } else {
             $button.prop('disabled', true);
@@ -55,8 +55,8 @@ $( document ).ready(function() {
 
     $('#add-cat-btn').click(function () {
         var body = $("body");
-        setTimeout(function(){
-            body.animate({scrollTop:$adminBoard.prop("scrollHeight")}, 500, 'swing');
+        setTimeout(function () {
+            body.animate({scrollTop: $adminBoard.prop("scrollHeight")}, 500, 'swing');
             $("#cat-name-input").focus();
         }, 200);
     });
@@ -65,38 +65,44 @@ $( document ).ready(function() {
         event.preventDefault();
         var url = $(this).attr("action");
         $.post(url, {name: $('#cat-name-input').val()}).done(function (data) {
-            var category = jQuery.parseJSON( data );
+            var category = jQuery.parseJSON(data);
             var categorySelect = $("#categories");
             categorySelect.find("option:selected").removeAttr("selected");
-            categorySelect.append("<option value='"+category.id +"' selected>"+ category.name +"</option>");
+            categorySelect.append("<option value='" + category.id + "' selected>" + category.name + "</option>");
             $("#cat-name-input").val("");
             $('#add-cat-btn').click();
             var alertMsg = "Category " + category.name + " successfully added!";
-            var $alertDiv = generateAlert("success",alertMsg);
+            var $alertDiv = generateAlert("success", alertMsg);
             $alertDiv.appendToAlertBox(alertFadeOutTimer);
-        },"json")
-            .fail(function(jqXHR) {
-                alert("ERROR!\n" + jQuery.parseJSON( jqXHR.responseText ).message);
+        }, "json")
+            .fail(function (jqXHR) {
+                alert("ERROR!\n" + jQuery.parseJSON(jqXHR.responseText).message);
                 return false;
             });
     });
 
-    $eventForm.submit(function(){
+    $eventForm.submit(function () {
         event.preventDefault();
         $currentlyOpened.hideToLoader();
         var url = $(this).attr("action");
-        $.post(url, createFormJson()).done(function (data) {
+        var method = $(this).attr("method");
+
+        $.ajax({
+            type: method,
+            url: url,
+            data: createFormJson(),
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            dataType: "text"
+        }).done(function (data) {
             var $alertDiv = generateAlert("success", data);
             showAllEvents($alertDiv);
-        },"json")
-            .fail(function(jqXHR) {
-                var alertMsg = jQuery.parseJSON( jqXHR.responseText ).message;
-                var $alertDiv = generateAlert("danger",alertMsg);
+        }).fail(function (jqXHR) {
+                var alertMsg = jQuery.parseJSON(jqXHR.responseText).message;
+                var $alertDiv = generateAlert("danger", alertMsg);
                 $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
                 return false;
             });
     });
-
 
 
     $('#filter-button').click(function () {
@@ -111,19 +117,19 @@ $( document ).ready(function() {
 
         $currentlyOpened.hideToLoader();
         var msg = "";
-        if (allCategories.length === selectedOptions.length){
+        if (allCategories.length === selectedOptions.length) {
             msg = "Showing events from all categories";
             var $alertDiv = generateAlert("success", msg, "search-result");
             showAllEvents($alertDiv);
-        } else{
+        } else {
             $.ajax({
                 type: "POST",
                 url: "/event/filter",
                 data: JSON.stringify(selectedValues),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                success: function(data){
-                    if (data.length === 0){
+                success: function (data) {
+                    if (data.length === 0) {
                         msg = "Sorry, but categories you have chosen currently have no events! :(";
                         $alertDiv = generateAlert("danger", msg, "search-result");
                         $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
@@ -133,9 +139,6 @@ $( document ).ready(function() {
                         $("#filter-well").html(generateFilterWell(wellMsg));
                         $table.fadeFromLoader();
                     }
-                },
-                failure: function(errMsg) {
-                    alert(errMsg);
                 }
             });
         }
@@ -143,21 +146,40 @@ $( document ).ready(function() {
         event.preventDefault();
     });
 
-    $tableBody.on("click",".view", function(){
+    $tableBody.on("click", ".view", function () {
         event.preventDefault();
         var route = "/event/" + this.id;
         $currentlyOpened.hideToLoader();
 
-        $.getJSON( route, function(event) {
+        $.getJSON(route, function (event) {
             populateEventData(event);
             $eventData.fadeFromLoader();
 
         })
-            .fail(function(jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 alert("ERROR!\n" + jqXHR.responseJSON.message);
                 location.reload();
             });
     });
+
+    $tableBody.on("click", ".edit", function () {
+        event.preventDefault();
+        var route = "/event/" + this.id;
+        $eventForm.prop('action', route);
+        $eventForm.prop('method', "PUT");
+        $currentlyOpened.hideToLoader();
+
+        $.getJSON(route, function (event) {
+            populateEventForm(event);
+            $adminBoard.fadeFromLoader();
+
+        })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                alert("ERROR!\n" + jqXHR.responseJSON.message);
+                location.reload();
+            });
+    });
+
 
     $tableBody.on("click", ".delete", function () {
         event.preventDefault();
@@ -169,7 +191,7 @@ $( document ).ready(function() {
             $.ajax({
                 url: route,
                 type: 'DELETE',
-                success: function(result) {
+                success: function (result) {
                     currentNode.closest(".event-row").remove();
                     var $alertDiv = generateAlert("success", result);
                     $table.fadeFromLoader($alertDiv, alertFadeOutTimer);
@@ -178,7 +200,7 @@ $( document ).ready(function() {
         }
     });
 
-    $("#filter-well").on("click",".back-anchor", function(){
+    $("#filter-well").on("click", ".back-anchor", function () {
         showAllEvents();
     });
 
@@ -200,7 +222,7 @@ $( document ).ready(function() {
 
         }
         setTimeout(function () {   //calls click event after a certain time;
-            if ($searchBox.val()){
+            if ($searchBox.val()) {
                 $button.prop('disabled', false);
             } else {
                 $button.prop('disabled', true);
@@ -209,7 +231,7 @@ $( document ).ready(function() {
 
     });
 
-    $("#search-button").click(function(){
+    $("#search-button").click(function () {
         var searchPhrase = $searchBox.val();
         var route = "/event/find/" + searchPhrase;
         $searchBox.val('');
@@ -219,20 +241,20 @@ $( document ).ready(function() {
         event.preventDefault();
 
         $currentlyOpened.hideToLoader();
-        $.getJSON( route, function(data) {
+        $.getJSON(route, function (data) {
             $(".search-result").remove();
-            if(data.length === 0){
+            if (data.length === 0) {
                 msg = "Sorry, but nothing matches your search query! :(";
                 $alertDiv = generateAlert("danger", msg, "search-result");
                 $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
 
-            } else if (data.length === 1){
+            } else if (data.length === 1) {
                 msg = "Found 1 match for your search query '" + searchPhrase + "'!";
                 $alertDiv = generateAlert("success", msg, "search-result");
                 populateEventData(data[0]);
                 $eventData.fadeFromLoader($alertDiv, alertFadeOutTimer);
             } else {
-                msg = "Found " + data.length +" matches for your search query '" + searchPhrase + "'!";
+                msg = "Found " + data.length + " matches for your search query '" + searchPhrase + "'!";
                 var wellMsg = "Showing results for your seach query '" + searchPhrase + "'";
                 $alertDiv = generateAlert("success", msg, "search-result");
                 populateEventTable(data);
@@ -240,7 +262,7 @@ $( document ).ready(function() {
                 $table.fadeFromLoader($alertDiv, alertFadeOutTimer);
             }
         })
-            .fail(function(jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 alert("ERROR!\n" + jqXHR.responseJSON.message);
                 location.reload();
             });
@@ -252,59 +274,61 @@ $( document ).ready(function() {
         var route = "/event/all";
         $currentlyOpened.hideToLoader();
 
-        $.getJSON( route, function(data) {
+        $.getJSON(route, function (data) {
             populateEventTable(data);
             $("#filter-well").html("");
-            $table.fadeFromLoader(msg,alertFadeOutTimer);
+            $table.fadeFromLoader(msg, alertFadeOutTimer);
         })
-            .fail(function(jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 alert("ERROR!\n" + jqXHR.responseJSON.message);
                 location.reload();
             });
     }
 
-    $(".data-dismiss").click(function(){
+    $(".data-dismiss").click(function () {
         $(this).closest(".dismissable").hide();
         $table.showAsCurrent();
     });
 
-    $.fn.showAsCurrent = function() {
+    $.fn.showAsCurrent = function () {
         this.fadeIn();
         $currentlyOpened = $(this);
     };
 
-    $.fn.hideToLoader = function(resetMode) {
+    $.fn.hideToLoader = function (resetMode) {
         this.hide();
         $loader.show();
     };
 
-    $.fn.fadeFromLoader = function(alertDiv, timeout) {
+    $.fn.fadeFromLoader = function (alertDiv, timeout) {
         var $currentNode = $(this);
 
-        if ($currentNode.attr("id") === $eventData.attr("id") || $currentNode.attr("id") === $adminBoard.attr("id")){
+        if ($currentNode.attr("id") === $eventData.attr("id") || $currentNode.attr("id") === $adminBoard.attr("id")) {
             $(".reset-mode").click();
         }
-        $loader.fadeOut(300,function(){
+        $loader.fadeOut(300, function () {
             $currentNode.showAsCurrent();
-            if (alertDiv){
+            if (alertDiv) {
                 alertDiv.appendToAlertBox(timeout)
             }
         });
     };
 
-    $.fn.appendToAlertBox = function(timeout) {
+    $.fn.appendToAlertBox = function (timeout) {
         $(this).appendTo($alertBox);
-        if (timeout){
+        if (timeout) {
             var alert = $(this);
-            setTimeout(function(){
-                alert.fadeOut(1000, function() { $(this).remove(); });
+            setTimeout(function () {
+                alert.fadeOut(1000, function () {
+                    $(this).remove();
+                });
             }, timeout);
         }
     };
 
-    function generateModeAlert(alertClass, msg){
+    function generateModeAlert(alertClass, msg) {
         $(".mode-alert").remove();
-        html = "<div class='mode-alert alert alert-" + alertClass + " text-center'>"+ msg + "</br><a href='#' class='reset-mode'>Take me back</a></div>";
+        html = "<div class='mode-alert alert alert-" + alertClass + " text-center'>" + msg + "</br><a href='#' class='reset-mode'>Take me back</a></div>";
         $(html).appendTo($alertBox);
     }
 });
@@ -316,9 +340,19 @@ function populateEventData(event) {
     $("#chosen-event-desc").html("<p>" + event.description + "</p>");
 }
 
-function generateAlert(alertClass, msg, additionalClass){
+function populateEventForm(event) {
+    var dateArray = event.date.split("-");
+    var formDate = dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0];
+
+    $('#name-input').val(event.name);
+    $("#date-input").val(formDate);
+    $("#desc-input").val(event.description);
+    $('#event-form').find('option[value=' + event.description.id + ']').prop('selected', true)
+}
+
+function generateAlert(alertClass, msg, additionalClass) {
     html = "<div class='alert alert-" + alertClass + " alert-dismissable fade in " + additionalClass +
-        "'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
+        "'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
         msg + "</div>";
     return $(html);
 }
@@ -330,11 +364,11 @@ function generateRow(event) {
 }
 
 function generateFilterWell(msg) {
-    var html = "<p>"+ msg +"</p> <a href='#' class='back-anchor'>Take me back</a>";
+    var html = "<p>" + msg + "</p> <a href='#' class='back-anchor'>Take me back</a>";
     $("#filter-well").html(html);
 }
 
-function populateEventTable(eventArray){
+function populateEventTable(eventArray) {
     $(".event-row").remove();
     var $tableBody = $("#event-table-body");
     $.each(eventArray, function (index, event) {
@@ -343,8 +377,9 @@ function populateEventTable(eventArray){
     });
 }
 
-function createFormJson(){
-    return {name: $('#name-input').val(),
+function createFormJson() {
+    return {
+        name: $('#name-input').val(),
         date: $("#date-input").val(),
         desc: $("#desc-input").val(),
         catId: $("#categories").find("option:selected").val()

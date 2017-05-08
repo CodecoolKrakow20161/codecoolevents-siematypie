@@ -2,7 +2,6 @@ import controller.CategoryController;
 import controller.EventController;
 import controller.ParamsMap;
 
-import dao.CategoryDao;
 import dao.CategoryDaoPostgres;
 import dao.PostgressConnectionHelper;
 import spark.Request;
@@ -71,6 +70,21 @@ public class Main {
             return "Event successfully deleted";
         });
 
+        put("/event/:id", "application/json", (req, res) -> {
+            String stringId = req.params(":id");
+            Integer id = Integer.parseInt(stringId);
+            String name = req.queryParams("name");
+            String date = req.queryParams("date");
+            String desc = req.queryParams("desc");
+            Integer catId = Integer.parseInt(req.queryParams("catId"));
+            Category category = new CategoryDaoPostgres().getById(catId);
+
+            if (category == null){
+                throw new IllegalArgumentException("Category doesn't exist");
+            }
+            EventController.updateEvent(id, name, date, desc, category);
+            return "Event successfully updated";
+        });
 
 
         // Equivalent with above
