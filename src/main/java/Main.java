@@ -1,12 +1,16 @@
+import controller.CategoryController;
 import controller.EventController;
 import controller.ParamsMap;
 
+import dao.CategoryDao;
+import dao.CategoryDaoPostgres;
 import dao.PostgressConnectionHelper;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import utils.JsonTransformer;
 import utils.ResponseError;
+import models.Category;
 
 import java.util.List;
 
@@ -21,6 +25,24 @@ public class Main {
         
         staticFileLocation("/public");
         port(8888);
+
+        post("/event/add","application/json", ((req, res) -> {
+            String name = req.queryParams("name");
+            String date = req.queryParams("date");
+            String desc = req.queryParams("desc");
+            Integer catId = Integer.parseInt(req.queryParams("catId"));
+            Category category = new CategoryDaoPostgres().getById(catId);
+
+            if (category == null){
+                throw new IllegalArgumentException("Category doesn't exist");
+            }
+            EventController.addEvent(name, date, desc, category);
+            return "Event " + name + "successfully added!";
+        }));
+
+
+        post("/category/add","application/json", ((req, res) ->
+                CategoryController.addCategory(req.queryParams("name"))));
 
         post("/event/filter", ((req, res) -> {
             List<Integer> lst = new JsonTransformer().parseToList(req.body(), Integer.class);

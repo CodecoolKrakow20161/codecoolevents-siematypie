@@ -5,7 +5,7 @@
     .input-group{
     max-width:200px;
     }
-    p,th,td, .board-label, .board-input, .back-anchor {font-size:2.5rem;}
+    p,th,td, .board-label, .board-input, .board-input-solid, .back-anchor {font-size:2.5rem;}
     .alert{
         font-size: 2rem;
     }
@@ -64,13 +64,25 @@ p{
     /*font-size: 2rem;*/
 /*}*/
 
-.board-input{
+.board-input, .dashed-input, .board-input-solid{
     width:100%;
     background-color: transparent;
-    border: none;
     color: whitesmoke;
+}
+
+.board-input{
+    border: none;
     border-bottom: solid;
 }
+
+.board-input-solid{
+    border: solid;
+}
+
+.dashed-input{
+    border: dashed;
+}
+
 
 th, .white-bg, .blackboard-button{
     background-image: url(../img/Chalky.jpg);
@@ -79,7 +91,7 @@ th, .white-bg, .blackboard-button{
 }
 
 
-#event-data, #loading{
+#event-data, #loading, #admin-board{
     display:none;
 }
 
@@ -90,13 +102,7 @@ th, .white-bg, .blackboard-button{
 table tr th {
   width: 25%;
 }
-/*
-tr:hover > td {
-    color:black;
-    background-image: url(Chalky.jpg);
-    background-size: contain;
-}
-*/
+
  .col-centered{
      float: none;
      margin: 0 auto;
@@ -118,7 +124,7 @@ tr:hover > td {
 
  }
 
- .data-content{
+ .data-content, .input-area, .text-area{
      padding: 8px;
      border-top:0;
      border-style: dashed;
@@ -153,20 +159,4 @@ tr:hover > td {
 
 #login-form{
     display: block; 
-}
-
-footer .navbar-collapse.in {
-    bottom: 70px;
-    position: absolute;
-    background-color:#333;
-  	width: 100%;
-}
-
-@media screen and (max-width: 768px) {
-  footer .navbar-collapse {
-	position: absolute;
-    bottom: 70px;
-    width: 100%;
-    background-color: #303030;
-  }
 }
