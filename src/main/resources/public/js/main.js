@@ -334,6 +334,9 @@ $(document).ready(function () {
         html = "<div class='mode-alert alert alert-" + alertClass + " text-center'>" + msg + "</br><a href='#' class='reset-mode'>Take me back</a></div>";
         $(html).appendTo($alertBox);
     }
+
+
+
 });
 
 function populateEventData(event) {
@@ -379,6 +382,9 @@ function generateFilterWell(msg) {
 
 function populateEventTable(eventArray) {
     $(".event-row").remove();
+    if (eventArray.length !== 0){
+       $("#no-events").remove();
+    }
     var $tableBody = $("#event-table-body");
     $.each(eventArray, function (index, event) {
         var row = generateRow(event);
@@ -393,4 +399,5 @@ function createFormJson() {
         desc: $("#desc-input").val(),
         catId: $("#categories").find("option:selected").val()
     }
+
 }
