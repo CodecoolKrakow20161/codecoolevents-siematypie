@@ -64,9 +64,14 @@ public class Main {
             return EventController.getEventJson(id);
         });
 
+        delete("/event/:id", "application/json", (req, res) -> {
+            String stringId = req.params(":id");
+            Integer id = Integer.parseInt(stringId);
+            EventController.deleteEvent(id);
+            return "Event successfully deleted";
+        });
 
-        // Always add generic routes to the end
-//        get("/", AppController::renderIndex, new ThymeleafTemplateEngine());
+
 
         // Equivalent with above
         get("/", (Request req, Response res) -> {
