@@ -91,7 +91,7 @@ th, .white-bg, .blackboard-button{
 }
 
 
-#event-data, #loading, #admin-board{
+#event-data, #loading, #admin-board, #table-invisible{
     display:none;
 }
 
@@ -159,4 +159,12 @@ table tr th {
 
 #login-form{
     display: block; 
+}
+
+.delete{
+    color: #d9534f;
+}
+
+.edit{
+    color: #5cb85c;
 }

@@ -42,6 +42,14 @@ public class EventDaoPostgres implements EventDao {
     }
 
     @Override
+    public void delete(Integer id) {
+        String query = "delete from events where id = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query).addParameter("id", id).executeUpdate();
+        }
+    }
+
+    @Override
     public Event getById(Integer id) {
         String query = "select * from events where id = :id";
         Table t;

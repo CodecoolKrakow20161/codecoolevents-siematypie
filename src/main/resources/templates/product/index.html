@@ -6,209 +6,226 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
-    <link href="css/style.css" rel="stylesheet" type="text/css" th:href="@{css/style.css}" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    <link href="css/style.css" rel="stylesheet" type="text/css" th:href="@{css/style.css}"/>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
 
     <!-- (Optional) Latest compiled and minified JavaScript translation files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/i18n/defaults-en_US.min.js"></script>
+    <script src="/js/main.js" th:href="@{js/main.js}"></script>
 
 
 </head>
 
 <body>
-    <div class="jumbotron">
-        <h1 class="text-center">Codecool event Manager</h1>
-        <div class="text-center">
+<div class="jumbotron">
+    <h1 class="text-center">Codecool event Manager</h1>
+    <div class="text-center">
         <div class="list-inline">
-            <li><button type="button" class="btn btn-lg btn-primary" id="add-event-btn">ADD EVENT</button></li>
-            <li><button type="button" class="btn btn-lg btn-success">EDIT EVENT</button></li>
-            <li><button type="button" class="btn btn-lg btn-danger">DELETE EVENT</button></li>
+            <li>
+                <button type="button" class="btn btn-lg btn-primary" id="add-event-btn">ADD EVENT</button>
+            </li>
+            <li>
+                <button type="button" class="btn btn-lg btn-success" id="edit-event-btn">EDIT EVENT</button>
+            </li>
+            <li>
+                <button type="button" class="btn btn-lg btn-danger" id="delete-event-btn">DELETE EVENT</button>
+            </li>
         </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img src="img/logo2.png" th:src="@{img/logo2.png}" width="254"/>
         </div>
-        <!--<button class="btn btn-primary btn-lg pull-right" id="add-event-button">Add event</button>-->
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" data-toggle="modal" data-target="#myModal"><span
+                        class="glyphicon glyphicon-user"></span> Login as administrator</a></li>
+            </ul>
+
+            <form class="navbar-form navbar-right">
+                <div class="input-group">
+                    <select class="selectpicker" id="filter-menu" multiple data-live-search="true" data-container="body"
+                            data-actions-box="true" title="Filter events by category" data-width="100%">
+                        <option class="filter-opt" th:each="cat : ${categoryContainer}" th:text="${cat.name}"
+                                th:value="${cat.id}">Party
+                        </option>
+
+                    </select>
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="filter-button" type="submit" disabled>
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <form class="navbar-form navbar-right">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="search-box" placeholder="Search">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-button" disabled>
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="container" id="blackboard">
+    <div id="loading" class="text-center">
+        <img src="img/animal.gif" th:src="@{img/animal.gif}"/>
     </div>
 
-    <nav class="navbar navbar-default navbar-fixed-bottom">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <img src="img/logo2.png" th:src="@{img/logo2.png}" width="254" />
-            </div>
+    <div id="message-box"></div>
 
-            <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-user"></span> Login as administrator</a></li>
-                </ul>
-
-                <form class="navbar-form navbar-right">
-                    <div class="input-group">
-                        <select class="selectpicker" id="filter-menu" multiple data-live-search="true" data-container="body"
-                                data-actions-box="true" title="Filter events by category" data-width="100%">
-                                <option class="filter-opt"  th:each="cat : ${categoryContainer}"  th:text="${cat.name}" th:value="${cat.id}">Party</option>
-
-                        </select>
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" id="filter-button" type="submit" disabled>
-                                <i class="glyphicon glyphicon-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                <form class="navbar-form navbar-right">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="search-box" placeholder="Search">
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" id="search-button" disabled>
-                                <i class="glyphicon glyphicon-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </nav>
-    <div class="container" id="blackboard">
-        <div id="loading" class="text-center">
-            <img src="img/animal.gif" th:src="@{img/animal.gif}" />
-        </div>
-
-        <div id="message-box"></div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <div th:switch="${eventContainer.isEmpty()}" id="event-table" class="hide-on-ajax">
-                    <h1>UPCOMING EVENTS</h1>
-                    <div id="filter-well" class="text-center">
-                    </div>
-                    <h1 th:case="true">There are no declared events yet!</h1>
-                    <table th:case="false" class="table">
+    <div class="row">
+        <div class="col-sm-12">
+            <div th:switch="${eventContainer.isEmpty()}" id="event-table" class="hide-on-ajax">
+                <h1>UPCOMING EVENTS</h1>
+                <div id="filter-well" class="text-center">
+                </div>
+                <h1 th:case="true">There are no declared events yet!</h1>
+                <table class="table">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Category</th>
-                        </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                    </tr>
                     </thead>
                     <tbody id="event-table-body">
-                        <tr class="event-row" th:each="event : ${eventContainer}">
-                            <td><a class="event-getter" href="#" th:text="${event.name}" th:id="${event.id}">PJUG zjazd javowców</a></td>
-                            <td th:text="${event.date}">11-04-93</td>
-                            <td th:text="${event.category.name}">john@example.asc</td>
-                        </tr>
+                    <tr class="event-row" th:each="event : ${eventContainer}">
+                        <td><a class="event-getter view" href="#" th:text="${event.name}" th:id="${event.id}">PJUG zjazd
+                            javowców</a></td>
+                        <td th:text="${event.date}">11-04-93</td>
+                        <td th:text="${event.category.name}">john@example.asc</td>
+                    </tr>
                     </tbody>
                 </table>
-                </div>
-                <div class="dismissable" id="event-data">
-                    <div class="row">
-                        <div class="col-sm-6 col-centered white-border">
-                            <div class="data-header white-bg">
-                                <button type="button" class="close close-data color-blk data-dismiss">&times;</button>
-                                <h1 class="text-center color-blk" id="chosen-event-name">EVENT NAME</h1>
+            </div>
+            <div class="dismissable" id="event-data">
+                <div class="row">
+                    <div class="col-sm-6 col-centered white-border">
+                        <div class="data-header white-bg">
+                            <button type="button" class="close close-data color-blk data-dismiss">&times;</button>
+                            <h1 class="text-center color-blk" id="chosen-event-name">EVENT NAME</h1>
 
+                        </div>
+                        <div class="data-content">
+                            <div class="event-info">
+                                <ul class="list-inline list-event">
+                                    <li><p id="chosen-event-cat">Category: Kategoria1</p></li>
+                                    <li><p id="chosen-event-date">Date: 11/04/93</p></li>
+                                </ul>
+
+                                <h2 class="text-center">Description:</h2>
+                                <div id="chosen-event-desc">
+                                    <p>Jest to zajebisty event, pozdrawiam i polecam, Antoni Macierewicz</p>
+                                </div>
                             </div>
-                            <div class = "data-content">
-                                <div class="event-info">
-                                    <ul class="list-inline list-event">
-                                        <li><p id="chosen-event-cat">Category:  Kategoria1</p></li>
-                                        <li> <p id="chosen-event-date">Date: 11/04/93</p></li>
-                                    </ul>
-                                    <!--<h1 class="text-center white-bg" id="chosen-event-name">EVENT NAME</h1>-->
-                                    <!--<h2 class="pull-right white-bg"><span class="glyphicon glyphicon-arrow-left"></span> BACK</h2>-->
-
-                                    <!--<h3 id="chosen-event-cat">Category:  Kategoria1</h3>-->
-                                    <!--<h3 id="chosen-event-date">Date: 11/04/93</h3>-->
-
-                                    <h2 class="text-center">Description:</h2>
-                                    <div id="chosen-event-desc">
-                                        <p>Jest to zajebisty event, pozdrawiam i polecam, Antoni Macierewicz</p>
-                                    </div>
-                                </div>
-                                <div class="data-footer text-center">
-                                    <button class="blackboard-button data-dismiss">
-                                        <span class="glyphicon glyphicon-arrow-left"></span> BACK
-                                    </button>
-                                </div>
+                            <div class="data-footer text-center">
+                                <button class="blackboard-button data-dismiss">
+                                    <span class="glyphicon glyphicon-arrow-left"></span> BACK
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="dismissable" id="admin-board">
-                    <div class="row">
-                        <div class="col-sm-6 col-centered white-border">
-                            <div class="data-header white-bg">
-                                <button type="button" class="close close-data color-blk data-dismiss">&times;</button>
-                                <h1 class="text-center color-blk" id="action-name">ADD NEW EVENT</h1>
+            <div class="dismissable" id="admin-board">
+                <div class="row">
+                    <div class="col-sm-6 col-centered white-border">
+                        <div class="data-header white-bg">
+                            <button type="button" class="close close-data color-blk data-dismiss">&times;</button>
+                            <h1 class="text-center color-blk" id="action-name">ADD NEW EVENT</h1>
 
-                            </div>
-                                <div class="input-area">
-                                    <form id="event-form" method="post" action="/event/add">
-                                        <div class="form-group">
-                                            <label for="name-input" class="board-label">NAME:</label>
-                                            <input type="text" id="name-input" class="board-input"/>
-                                        </div>
+                        </div>
+                        <div class="input-area">
+                            <form id="event-form" method="post" action="/event/add">
+                                <div class="form-group">
+                                    <label for="name-input" class="board-label">NAME:</label>
+                                    <input type="text" id="name-input" class="board-input"/>
+                                </div>
 
-                                        <div class="form-group">
-                                            <label for="date-input" class="board-label">DATE:</label>
-                                            <input type="date" id="date-input" class="board-input">
-                                        </div>
+                                <div class="form-group">
+                                    <label for="date-input" class="board-label">DATE:</label>
+                                    <input type="date" id="date-input" class="board-input">
+                                </div>
 
-                                        <div class="form-group">
-                                            <label for="desc-input" class="board-label">DESCRIPTION:</label>
-                                            <textarea rows="4" cols="50" id="desc-input" class="board-input-solid">
+                                <div class="form-group">
+                                    <label for="desc-input" class="board-label">DESCRIPTION:</label>
+                                    <textarea rows="4" cols="50" id="desc-input" class="board-input-solid">
                                         </textarea>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <ul class="list-inline">
-                                                <li><label for="categories" class="board-label">Category:</label></li>
-                                                <li><button type="button" data-toggle="collapse" data-target="#category-form" id="add-cat-btn" class="btn btn-success btn-sm"> add new</button></li>
-                                            </ul>
-                                            <select id="categories" class="board-input">
-                                                <option class="category-picker color-blk"  th:each="cat : ${categoryContainer}"  th:text="${cat.name}" th:value="${cat.id}">Party</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <button class="btn btn-primary btn-lg submit-event center-block">Add event</button>
-                                        </div>
-
-                                    </form>
-                                    <div id="category-form" class="collapse">
-                                        <h2 class="text-center white-bg">Add new category</h2>
-                                        <form id="add-category" method="post" action="/category/add" >
-                                            <div class="form-group">
-                                                <label for="cat-name-input" class="board-label">Category name:</label>
-                                                <input type="text" id="cat-name-input" class="board-input"/>
-                                            </div>
-                                            <div class="form-group">
-                                                <button class="btn btn-success btn-sm submit-category center-block">Add category</button>
-                                            </div>
-                                        </form>
                                 </div>
-                                <div class="data-footer text-center">
-                                    <button class="blackboard-button data-dismiss">
-                                        <span class="glyphicon glyphicon-arrow-left"></span> BACK
-                                    </button>
+
+                                <div class="form-group">
+                                    <ul class="list-inline">
+                                        <li><label for="categories" class="board-label">Category:</label></li>
+                                        <li>
+                                            <button type="button" data-toggle="collapse" data-target="#category-form"
+                                                    id="add-cat-btn" class="btn btn-success btn-sm"> add new
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <select id="categories" class="board-input">
+                                        <option class="category-picker color-blk" th:each="cat : ${categoryContainer}"
+                                                th:text="${cat.name}" th:value="${cat.id}">Party
+                                        </option>
+                                    </select>
                                 </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-lg submit-event center-block">Add event</button>
+                                </div>
+
+                            </form>
+                            <div id="category-form" class="collapse">
+                                <h2 class="text-center white-bg">Add new category</h2>
+                                <form id="add-category" method="post" action="/category/add">
+                                    <div class="form-group">
+                                        <label for="cat-name-input" class="board-label">Category name:</label>
+                                        <input type="text" id="cat-name-input" class="board-input"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success btn-sm submit-category center-block">Add
+                                            category
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="data-footer text-center">
+                                <button class="blackboard-button data-dismiss">
+                                    <span class="glyphicon glyphicon-arrow-left"></span> BACK
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -216,337 +233,41 @@
             </div>
         </div>
     </div>
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+</div>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Administrator log-in</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Please provide your credentials</p>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3">
-                            <form id="login-form">
-                                <label for="login" class="board-label">LOGIN:</label>
-                                <input type="text" id="login" class="board-input" />
-                                <br>
-                                <br>
-                                <label for="password" class="board-label">PASSWORD:</label>
-                                <input type="password" id="password" class="board-input" />
-                                <div class="text-center">
-                                    <br/>
-                                    <button type="button" class="btn btn-default btn-lg">Log in!</button>
-                                </div>
-                            </form>
-                        </div>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Administrator log-in</h4>
+            </div>
+            <div class="modal-body">
+                <p>Please provide your credentials</p>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form id="login-form">
+                            <label for="login" class="board-label">LOGIN:</label>
+                            <input type="text" id="login" class="board-input"/>
+                            <br>
+                            <br>
+                            <label for="password" class="board-label">PASSWORD:</label>
+                            <input type="password" id="password" class="board-input"/>
+                            <div class="text-center">
+                                <br/>
+                                <button type="button" class="btn btn-default btn-lg">Log in!</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
             </div>
-
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
-
-<script>
-    $( document ).ready(function() {
-        var alertFadeOutTimer = 3000;
-        var $eventData = $("#event-data");
-        var $table = $("#event-table");
-        var $currentlyOpened = $table;
-        var $loader = $("#loading");
-        var $alertBox = $("#message-box");
-        var $searchBox = $('#search-box');
-        var $filterMenu = $('#filter-menu');
-        var $adminBoard = $("#admin-board");
-        var $categoryForm = $("#add-category");
-        var $eventForm = $("#event-form");
-
-        $filterMenu.change(function () {
-            var $button = $("#filter-button");
-            var selectedOptions = $(this).find("option:selected");
-            if (selectedOptions.length > 0){
-                $button.prop('disabled', false);
-            } else {
-                $button.prop('disabled', true);
-            }
-        });
-
-        $('#add-event-btn').click(function () {
-            $currentlyOpened.hide();
-            $adminBoard.showAsCurrent();
-        });
-
-        $('#add-cat-btn').click(function () {
-            var body = $("body");
-            setTimeout(function(){
-                body.animate({scrollTop:$adminBoard.prop("scrollHeight")}, 500, 'swing');
-                $("#cat-name-input").focus();
-            }, 200);
-        });
-
-        $categoryForm.submit(function () {
-            event.preventDefault();
-            var url = $(this).attr("action");
-            $.post(url, {name: $('#cat-name-input').val()}).done(function (data) {
-                var category = jQuery.parseJSON( data );
-                var categorySelect = $("#categories");
-                categorySelect.find("option:selected").removeAttr("selected");
-                categorySelect.append("<option value='"+category.id +"' selected>"+ category.name +"</option>");
-                $("#cat-name-input").val("");
-                $('#add-cat-btn').click();
-                var alertMsg = "Category " + category.name + " successfully added!";
-                var $alertDiv = generateAlert("success",alertMsg);
-                $alertDiv.appendToAlertBox(alertFadeOutTimer);
-
-            },"json")
-            .fail(function(jqXHR) {
-                alert("ERROR!\n" + jQuery.parseJSON( jqXHR.responseText ).message);
-                return false;
-            });
-        });
-
-        $eventForm.submit(function(){
-            event.preventDefault();
-            $currentlyOpened.hideToLoader();
-            var url = $(this).attr("action");
-            $.post(url, createFormJson()).done(function (data) {
-                var $alertDiv = generateAlert("success", data);
-                showAllEvents($alertDiv);
-            },"json")
-                .fail(function(jqXHR) {
-                    var alertMsg = jQuery.parseJSON( jqXHR.responseText ).message;
-                    var $alertDiv = generateAlert("danger",alertMsg);
-                    $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
-                    return false;
-                });
-        });
-
-
-
-        $('#filter-button').click(function () {
-            var allCategories = $("option.filter-opt");
-            var selectedOptions = $filterMenu.find("option:selected");
-            var selectedValues = selectedOptions.map(function () {
-                return $(this).val();
-            }).get();
-            var selectedNames = selectedOptions.map(function () {
-                return this.text;
-            }).get();
-
-            $currentlyOpened.hideToLoader();
-            var msg = "";
-            if (allCategories.length === selectedOptions.length){
-                msg = "Showing events from all categories";
-                var $alertDiv = generateAlert("success", msg, "search-result");
-                showAllEvents($alertDiv);
-            } else{
-                $.ajax({
-                    type: "POST",
-                    url: "/event/filter",
-                    data: JSON.stringify(selectedValues),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function(data){
-                        if (data.length === 0){
-                            msg = "Sorry, but categories you have chosen currently have no events! :(";
-                            $alertDiv = generateAlert("danger", msg, "search-result");
-                            $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
-                        } else {
-                            var wellMsg = "Showing events from following categories: " + selectedNames.join(", ");
-                            populateEventTable(data);
-                            $("#filter-well").html(generateFilterWell(wellMsg));
-                            $table.fadeFromLoader();
-                        }
-                    },
-                    failure: function(errMsg) {
-                        alert(errMsg);
-                    }
-                });
-            }
-            $filterMenu.selectpicker('deselectAll');
-            event.preventDefault();
-        });
-
-        $("#event-table-body").on("click",".event-getter", function(){
-            event.preventDefault();
-            var route = "/event/" + this.id;
-            $currentlyOpened.hideToLoader();
-
-            $.getJSON( route, function(event) {
-                populateEventData(event);
-                $eventData.fadeFromLoader();
-
-            })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert("ERROR!\n" + jqXHR.responseJSON.message);
-                    location.reload();
-                });
-        });
-
-        $("#filter-well").on("click",".back-anchor", function(){
-            showAllEvents();
-        });
-
-        $searchBox.on('keydown', function (e) {
-            var $button = $("#search-button");
-            if (e.which === 13 && $(this).val()) {
-                $button.click();
-                e.preventDefault();
-                return false;
-
-            }
-            setTimeout(function () {   //calls click event after a certain time;
-                if ($searchBox.val()){
-                    $button.prop('disabled', false);
-                } else {
-                    $button.prop('disabled', true);
-                }
-            }, 100);
-
-        });
-
-        $("#search-button").click(function(){
-            var searchPhrase = $searchBox.val();
-            var route = "/event/find/" + searchPhrase;
-            $searchBox.val('');
-            $(this).prop('disabled', true);
-            var msg = "";
-            var $alertDiv = "";
-            event.preventDefault();
-
-            $currentlyOpened.hideToLoader();
-            $.getJSON( route, function(data) {
-                $(".search-result").remove();
-                if(data.length === 0){
-                    msg = "Sorry, but nothing matches your search query! :(";
-                    $alertDiv = generateAlert("danger", msg, "search-result");
-                    $currentlyOpened.fadeFromLoader($alertDiv, alertFadeOutTimer);
-
-                } else if (data.length === 1){
-                    msg = "Found 1 match for your search query '" + searchPhrase + "'!";
-                    $alertDiv = generateAlert("success", msg, "search-result");
-                    populateEventData(data[0]);
-                    $eventData.fadeFromLoader($alertDiv, alertFadeOutTimer);
-                } else {
-                    msg = "Found " + data.length +" matches for your search query '" + searchPhrase + "'!";
-                    var wellMsg = "Showing results for your seach query '" + searchPhrase + "'";
-                    $alertDiv = generateAlert("success", msg, "search-result");
-                    populateEventTable(data);
-                    $("#filter-well").html(generateFilterWell(wellMsg));
-                    $table.fadeFromLoader($alertDiv, alertFadeOutTimer);
-                }
-            })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert("ERROR!\n" + jqXHR.responseJSON.message);
-                    location.reload();
-                });
-            return false;
-        });
-
-        function showAllEvents(msg) {
-            event.preventDefault();
-            var route = "/event/all";
-            $currentlyOpened.hideToLoader();
-
-            $.getJSON( route, function(data) {
-                populateEventTable(data);
-                $("#filter-well").html("");
-                $table.fadeFromLoader(msg,alertFadeOutTimer);
-            })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert("ERROR!\n" + jqXHR.responseJSON.message);
-                    location.reload();
-                });
-        }
-
-        $(".data-dismiss").click(function(){
-            $(this).closest(".dismissable").hide();
-            $table.showAsCurrent();
-        });
-
-        $.fn.showAsCurrent = function() {
-            this.fadeIn();
-            $currentlyOpened = $(this);
-        };
-
-        $.fn.hideToLoader = function() {
-            this.hide();
-            $loader.show();
-        };
-
-        $.fn.fadeFromLoader = function(alertDiv, timeout) {
-            var $currentNode = $(this);
-            $loader.fadeOut(300,function(){
-                $currentNode.showAsCurrent();
-                if (alertDiv){
-                    alertDiv.appendToAlertBox(timeout)
-                }
-            });
-        };
-
-        $.fn.appendToAlertBox = function(timeout) {
-            $(this).appendTo($alertBox);
-            if (timeout){
-                var alert = $(this);
-                setTimeout(function(){
-                    alert.fadeOut(1000, function() { $(this).remove(); });
-                }, timeout);
-            }
-        };
-    });
-
-    function populateEventData(event) {
-        $("#chosen-event-name").text(event.name);
-        $("#chosen-event-date").text("Date: " + event.date);
-        $("#chosen-event-cat").text("Category: " + event.category.name);
-        $("#chosen-event-desc").html("<p>" + event.description + "</p>");
-    }
-
-    function generateAlert(alertClass, msg, additionalClass){
-        html = "<div class='alert alert-" + alertClass + " alert-dismissable fade in " + additionalClass +
-            "'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
-            msg + "</div>";
-        return $(html);
-    }
-
-    function generateRow(event) {
-        return "<tr class='event-row'><td><a class='event-getter' href='#' id='" + event.id + "'>" + event.name + "</a></td>" +
-               "<td>" + event.date + "</td>" +
-               "<td>" + event.category.name + "</td></tr>"
-    }
-
-    function generateFilterWell(msg) {
-        var html = "<p>"+ msg +"</p> <a href='#' class='back-anchor'>Take me back</a>";
-        $("#filter-well").html(html);
-    }
-
-    function populateEventTable(eventArray){
-        $(".event-row").remove();
-        var $tableBody = $("#event-table-body");
-        $.each(eventArray, function (index, event) {
-            var row = generateRow(event);
-            $tableBody.append(row);
-        });
-    }
-
-    function createFormJson(){
-        return {name: $('#name-input').val(),
-                date: $("#date-input").val(),
-                desc: $("#desc-input").val(),
-                catId: $("#categories").find("option:selected").val()
-        }
-    }
-
-
-
-
-
-</script>
+</div>
 </body>
 
 </html>

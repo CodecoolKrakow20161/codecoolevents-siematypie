@@ -60,4 +60,8 @@ public class EventController {
         Event eventToAdd = new Event(name, date, description, category);
         dao.addOrUpdate(eventToAdd);
     }
+
+    public static void deleteEvent(Integer eventId){
+        dao.delete(eventId);
+    }
 }
