@@ -28,6 +28,9 @@ $(document).ready(function () {
     $('#add-event-btn').click(function () {
         $currentlyOpened.hide();
         $(".reset-mode").click();
+        $eventForm.prop('action', "/event/add");
+        $eventForm.prop('method', "POST");
+        resetEventForm();
         $adminBoard.showAsCurrent();
     });
 
@@ -348,6 +351,12 @@ function populateEventForm(event) {
     $("#date-input").val(formDate);
     $("#desc-input").val(event.description);
     $('#event-form').find('option[value=' + event.description.id + ']').prop('selected', true)
+}
+
+function resetEventForm(){
+    $('#name-input').val("");
+    $("#date-input").val("");
+    $("#desc-input").val("");
 }
 
 function generateAlert(alertClass, msg, additionalClass) {
