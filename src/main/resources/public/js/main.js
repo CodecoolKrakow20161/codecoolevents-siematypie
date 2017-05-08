@@ -28,6 +28,7 @@ $(document).ready(function () {
     $('#add-event-btn').click(function () {
         $currentlyOpened.hide();
         $(".reset-mode").click();
+        $("#action-name").text("Add new event");
         $eventForm.prop('action', "/event/add");
         $eventForm.prop('method', "POST");
         resetEventForm();
@@ -170,6 +171,7 @@ $(document).ready(function () {
         var route = "/event/" + this.id;
         $eventForm.prop('action', route);
         $eventForm.prop('method', "PUT");
+        $("#action-name").text("Edit event");
         $currentlyOpened.hideToLoader();
 
         $.getJSON(route, function (event) {
