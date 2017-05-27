@@ -17,11 +17,12 @@ import  static spark.Spark.*;
 public class Main {
 
     public static void main(String[] args) {
-        PostgressConnectionHelper.setDbCon("localhost:5432","event",
-                                            "event_owner", "secretpass");
+        PostgressConnectionHelper.setDbCon("ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432",
+                "dc0sbu4g2pr6du", "tmbznnxxkubvph",
+                "a013fa793e1d02b3c729e054657b7898674b65b58c33acb47ad0591b4f4565c4");
         
         staticFileLocation("/public");
-        port(8888);
+        port(getHerokuAssignedPort());
 
         post("/event/add","application/json", ((req, res) -> {
             String name = req.queryParams("name");
@@ -98,6 +99,14 @@ public class Main {
             res.body(new JsonTransformer().render(new ResponseError(e)));
         });
 
+    }
+
+    static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 8888; //return default port if heroku-port isn't set (i.e. on localhost)
     }
 
 
