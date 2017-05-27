@@ -15,7 +15,7 @@ public class PostgressConnectionHelper {
     public static void setDbCon(String dbAddress, String dbName, String user, String pass){
         dbCon = new Sql2o("jdbc:postgresql://" + dbAddress + "/" + dbName, user, pass);
 
-        String[] createTableQueries = reader.getStringFromFile("/sqls/createTables.sql").split(";");
+        String[] createTableQueries = reader.getStringFromFile("sqls/createTables.sql").split(";");
         try (Connection con = dbCon.beginTransaction()) {
             for (String query: createTableQueries){
                 con.createQuery(query).executeUpdate();
