@@ -6,11 +6,9 @@ import dao.CategoryDaoPostgres;
 import dao.PostgressConnectionHelper;
 import spark.Request;
 import spark.Response;
-import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import utils.JsonTransformer;
 import utils.ResponseError;
 import models.Category;
-
 import java.util.List;
 
 import  static spark.Spark.*;
@@ -92,7 +90,7 @@ public class Main {
             ParamsMap p = new ParamsMap();
             p.putAllCategories();
             p.putAllEvents();
-            return new ThymeleafTemplateEngine().render( p.getModelAndView("product/index") );
+            return p.renderTemplate("product/index");
         });
 
         exception(IllegalArgumentException.class, (e, req, res) -> {
