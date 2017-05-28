@@ -372,7 +372,7 @@ function generateAlert(alertClass, msg, additionalClass) {
 }
 
 function generateRow(event) {
-    return "<tr class='event-row'><td><a class='event-getter' href='#' id='" + event.id + "'>" + event.name + "</a></td>" +
+    return "<tr class='event-row'><td><a class='event-getter view' href='#' id='" + event.id + "'>" + event.name + "</a></td>" +
         "<td>" + event.date + "</td>" +
         "<td>" + event.category.name + "</td></tr>"
 }
