@@ -73,8 +73,8 @@
             <form class="navbar-form navbar-right">
                 <div class="input-group">
                     <select class="selectpicker" id="filter-menu" multiple data-live-search="true" data-container="body"
-                            data-actions-box="true" title="Filter events by category" data-width="100%">
-                        <option class="filter-opt" th:each="cat : ${categoryContainer}" th:text="${cat.name}"
+                            data-actions-box="true" title="Filter events by category" data-width="100%" data-selected-text-format="count > 3">
+                        <option class="filter-opt" th:each="cat : ${categoryContainer}" th:text="${cat.name} "
                                 th:value="${cat.id}">Party
                         </option>
 
