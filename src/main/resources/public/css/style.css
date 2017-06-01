@@ -91,7 +91,7 @@ th, .white-bg, .blackboard-button{
 }
 
 
-#event-data, #loading, #admin-board, #table-invisible{
+#event-data, #loading, #admin-board, #table-invisible, #admin-btns{
     display:none;
 }
 

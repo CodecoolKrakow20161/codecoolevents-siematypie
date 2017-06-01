@@ -8,7 +8,6 @@ import org.sql2o.Sql2oException;
 
 
 import java.util.List;
-import java.util.Locale;
 
 public class CategoryDaoPostgres implements CategoryDao {
     private Sql2o sql2o;
