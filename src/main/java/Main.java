@@ -4,12 +4,20 @@ import controller.ParamsMap;
 
 import dao.CategoryDaoPostgres;
 import dao.PostgressConnectionHelper;
+import io.jsonwebtoken.JwtException;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import spark.Request;
 import spark.Response;
+import utils.JWTGenerator;
 import utils.JsonTransformer;
 import utils.ResponseError;
 import models.Category;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+
 
 import  static spark.Spark.*;
 
@@ -23,11 +31,22 @@ public class Main {
         
         staticFileLocation("/public");
         port(getHerokuAssignedPort());
+        Integer tokenExpirationTime = 10800000;
 
-        post("/event/add","application/json", ((req, res) -> {
-            String name = req.queryParams("name");
-            String date = req.queryParams("date");
-            String desc = req.queryParams("desc");
+        before("protected/*", (request, response) -> {
+            try {
+                JWTGenerator.getInstance().parseJWT(request.headers("x-admin-token"));
+            } catch (JwtException e) {
+                e.printStackTrace();
+                String msg = "Your session is not valid, please login again to get access to admin features";
+                throw halt(401, new JsonTransformer().render(new ResponseError(msg)));
+            }
+        });
+
+        post("protected/event/add","application/json", ((req, res) -> {
+            String name = Jsoup.clean(req.queryParams("name"), Whitelist.basic());
+            String date = Jsoup.clean(req.queryParams("date"), Whitelist.basic());
+            String desc = Jsoup.clean(req.queryParams("desc"), Whitelist.basic());
             Integer catId = Integer.parseInt(req.queryParams("catId"));
             Category category = new CategoryDaoPostgres().getById(catId);
 
@@ -39,8 +58,8 @@ public class Main {
         }));
 
 
-        post("/category/add","application/json", ((req, res) ->
-                CategoryController.addCategory(req.queryParams("name"))));
+        post("protected/category/add","application/json", ((req, res) ->
+                CategoryController.addCategory(Jsoup.clean(req.queryParams("name"), Whitelist.basic()))));
 
         post("/event/filter", ((req, res) -> {
             List<Integer> lst = new JsonTransformer().parseToList(req.body(), Integer.class);
@@ -62,19 +81,19 @@ public class Main {
             return EventController.getEventJson(id);
         });
 
-        delete("/event/:id", "application/json", (req, res) -> {
+        delete("protected/event/:id", "application/json", (req, res) -> {
             String stringId = req.params(":id");
             Integer id = Integer.parseInt(stringId);
             EventController.deleteEvent(id);
             return "Event successfully deleted";
         });
 
-        put("/event/:id", "application/json", (req, res) -> {
+        put("protected/event/:id", "application/json", (req, res) -> {
             String stringId = req.params(":id");
             Integer id = Integer.parseInt(stringId);
-            String name = req.queryParams("name");
-            String date = req.queryParams("date");
-            String desc = req.queryParams("desc");
+            String name = Jsoup.clean(req.queryParams("name"), Whitelist.basic());
+            String date = Jsoup.clean(req.queryParams("date"), Whitelist.basic());
+            String desc = Jsoup.clean(req.queryParams("desc"), Whitelist.basic());
             Integer catId = Integer.parseInt(req.queryParams("catId"));
             Category category = new CategoryDaoPostgres().getById(catId);
 
@@ -85,6 +104,18 @@ public class Main {
             return "Event successfully updated";
         });
 
+        post("/login", ((req, res) -> {
+            System.out.println(req.queryParams("name"));
+            if ((!(req.queryParams("name").equals("admin")) ||
+                    !req.queryParams("password").equals("codecool"))) {
+                throw halt(401, new JsonTransformer().render(new ResponseError("Invalid credentials")));
+            }
+
+            String jwt = JWTGenerator.getInstance().createJWT("admin", tokenExpirationTime);
+
+            res.header("x-admin-token", jwt);
+            return "{\"expirationTime\":"+ tokenExpirationTime + "}";
+        }));
 
         // Equivalent with above
         get("/", (Request req, Response res) -> {

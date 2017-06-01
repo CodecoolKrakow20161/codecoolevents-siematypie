@@ -36,10 +36,11 @@
 </head>
 
 <body>
-<div class="jumbotron">
+<div class="jumbotron text-center">
     <h1 class="text-center">Codecool event Manager</h1>
+
     <div class="text-center">
-        <div class="list-inline">
+        <div class="list-inline" id="admin-btns">
             <li>
                 <button type="button" class="btn btn-lg btn-primary" id="add-event-btn">ADD EVENT</button>
             </li>
@@ -66,7 +67,7 @@
 
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" data-toggle="modal" data-target="#myModal"><span
+                <li><a id="login-btn" href="#" data-toggle="modal" data-target="#myModal"><span
                         class="glyphicon glyphicon-user"></span> Login as administrator</a></li>
             </ul>
 
@@ -99,7 +100,9 @@
         </div>
     </div>
 </nav>
+
 <div class="container" id="blackboard">
+
     <div id="loading" class="text-center">
         <img src="img/animal.gif" th:src="@{img/animal.gif}"/>
     </div>
@@ -210,7 +213,7 @@
                             </form>
                             <div id="category-form" class="collapse">
                                 <h2 class="text-center white-bg">Add new category</h2>
-                                <form id="add-category" method="post" action="/category/add">
+                                <form id="add-category" method="post" action="protected/category/add">
                                     <div class="form-group">
                                         <label for="cat-name-input" class="board-label">Category name:</label>
                                         <input type="text" id="cat-name-input" class="board-input"/>
@@ -247,7 +250,7 @@
                 <p>Please provide your credentials</p>
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
-                        <form id="login-form">
+                        <form id="login-form" action="/login" method="post">
                             <label for="login" class="board-label">LOGIN:</label>
                             <input type="text" id="login" class="board-input"/>
                             <br>
@@ -256,14 +259,14 @@
                             <input type="password" id="password" class="board-input"/>
                             <div class="text-center">
                                 <br/>
-                                <button type="button" class="btn btn-default btn-lg">Log in!</button>
+                                <button class="btn btn-default btn-lg">Log in!</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" id="login-close" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
