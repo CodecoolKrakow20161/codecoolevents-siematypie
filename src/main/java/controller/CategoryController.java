@@ -7,7 +7,6 @@ import utils.JsonTransformer;
 
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class CategoryController {
@@ -24,6 +23,13 @@ public class CategoryController {
     public static String addCategory(String name){
         Category cat = new Category(name);
         return jsonTransformer.render(dao.addAndReturn(cat));
+    }
 
+    public static void deleteCategory(Integer catId){
+        if (catId == 1){
+            throw new IllegalArgumentException("You can't delete general category!");
+        } else {
+            dao.delete(catId);
+        }
     }
 }
