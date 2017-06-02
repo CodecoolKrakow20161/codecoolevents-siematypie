@@ -113,14 +113,51 @@ $(document).ready(function () {
         }, 200);
     });
 
+    $('#del-cat-btn').click(function () {
+        var categorySelect = $("#categories");
+        var selectedCat = categorySelect.find("option:selected");
+        var selectpicker = $('.selectpicker');
+        if(selectedCat.val() === "1"){
+            alert("You can't delete general category!");
+            return;
+        }
+        var r = confirm(
+            "After deleting " + selectedCat.text() + " all events from it will be moved to 'general' category. Proceed? "
+        );
+        if (r === true){
+            var route = "protected/category/" + selectedCat.val();
+            $.ajax({
+                url: route,
+                type: 'DELETE',
+                success: function (result) {
+                    selectedCat.remove();
+                    selectpicker.selectpicker();
+                    selectpicker.find('option[value=' + selectedCat.val() + ']').remove();
+                    selectpicker.selectpicker('refresh');
+                    var $alertDiv = generateAlert("success", result);
+                    $alertDiv.appendToAlertBox(alertFadeOutTimer);
+                }
+            }).fail(ajaxError);
+        }
+
+    });
+
+
+
     $categoryForm.submit(function (e) {
         e.preventDefault();
         var url = $(this).attr("action");
         $.post(url, {name: $('#cat-name-input').val()}).done(function (data) {
             var category = jQuery.parseJSON(data);
             var categorySelect = $("#categories");
+            var selectpicker = $(".selectpicker");
             categorySelect.find("option:selected").removeAttr("selected");
-            categorySelect.append("<option value='" + category.id + "' selected>" + category.name + "</option>");
+            categorySelect.append("<option class='category-picker color-blk' value='" + category.id + "' selected>" + category.name + "</option>");
+
+            selectpicker.selectpicker();
+            selectpicker.append("<option class='filter-opt' value='" + category.id + "'>" + category.name + "</option>");
+            selectpicker.selectpicker('refresh');
+
             $("#cat-name-input").val("");
             $('#add-cat-btn').click();
             var alertMsg = "Category " + category.name + " successfully added!";
