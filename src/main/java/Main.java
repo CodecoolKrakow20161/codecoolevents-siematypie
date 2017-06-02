@@ -50,12 +50,19 @@ public class Main {
                 throw new IllegalArgumentException("Category doesn't exist");
             }
             EventController.addEvent(name, date, desc, category);
-            return "Event " + name + "successfully added!";
+            return "Event " + name + " successfully added!";
         }));
 
 
         post("protected/category/add","application/json", ((req, res) ->
                 CategoryController.addCategory(Jsoup.clean(req.queryParams("name"), Whitelist.none()))));
+
+        delete("protected/category/:id", "application/json", (req, res) -> {
+            String stringId = req.params(":id");
+            Integer id = Integer.parseInt(stringId);
+            CategoryController.deleteCategory(id);
+            return "Category succesfully deleted";
+        });
 
         post("/event/filter", ((req, res) -> {
             List<Integer> lst = new JsonTransformer().parseToList(req.body(), Integer.class);

@@ -168,3 +168,11 @@ table tr th {
 .edit{
     color: #5cb85c;
 }
+
+.header-clickable{
+    cursor: pointer; cursor: hand;
+}
+
+.header-clickable:hover {
+    color: #2C689D;
+}
