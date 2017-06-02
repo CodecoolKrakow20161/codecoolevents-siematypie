@@ -149,7 +149,7 @@ $(document).ready(function () {
 
 
     $categoryForm.submit(function (event) {
-        event.defaultPrevented;
+        event.preventDefault();
         var url = $(this).attr("action");
         $.post(url, {name: $('#cat-name-input').val()}).done(function (data) {
             var category = jQuery.parseJSON(data);
