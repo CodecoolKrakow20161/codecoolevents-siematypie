@@ -65,6 +65,7 @@ $(document).ready(function () {
 
     $('#login-btn').click(function (e) {
         if (localStorage.getItem('x-admin-token')){
+            localStorage.clear();
             e.preventDefault();
             e.stopPropagation();
             logOut();
