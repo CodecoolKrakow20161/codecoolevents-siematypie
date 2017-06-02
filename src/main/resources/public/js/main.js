@@ -33,8 +33,8 @@ $(document).ready(function () {
         }
     };
 
-    $("#jumbo-header").click(function () {
-       showAllEvents();
+    $("#jumbo-header").click(function (event) {
+       showAllEvents(event);
     });
 
     function checkSession() {
@@ -67,11 +67,11 @@ $(document).ready(function () {
         }
     });
 
-    $('#login-btn').click(function (e) {
+    $('#login-btn').click(function (event) {
         if (localStorage.getItem('x-admin-token')){
             localStorage.clear();
-            e.preventDefault();
-            e.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
             logOut();
         }
 
@@ -148,8 +148,8 @@ $(document).ready(function () {
 
 
 
-    $categoryForm.submit(function (e) {
-        e.preventDefault();
+    $categoryForm.submit(function (event) {
+        event.defaultPrevented;
         var url = $(this).attr("action");
         $.post(url, {name: $('#cat-name-input').val()}).done(function (data) {
             var category = jQuery.parseJSON(data);
@@ -177,8 +177,8 @@ $(document).ready(function () {
             });
     });
 
-    $eventForm.submit(function (e) {
-        e.preventDefault();
+    $eventForm.submit(function (event) {
+        event.preventDefault();
         $currentlyOpened.hideToLoader();
         var url = $(this).attr("action");
         var method = $(this).attr("method");
@@ -191,14 +191,14 @@ $(document).ready(function () {
             dataType: "text"
         }).done(function (data) {
             var $alertDiv = generateAlert("success", data);
-            showAllEvents($alertDiv);
+            showAllEvents(event, $alertDiv);
         }).fail(ajaxError);
     });
 
 
 
-    $loginForm.submit(function (e) {
-        e.preventDefault();
+    $loginForm.submit(function (event) {
+        event.preventDefault();
         var url = $(this).attr("action");
         var method = $(this).attr("method");
         var data = {
@@ -239,9 +239,9 @@ $(document).ready(function () {
             sessionTimeout = setTimeout(logOutIfExpired, tokenExpDate - new Date());
         }
     }
-    
-    $('#filter-button').click(function (e) {
-        e.preventDefault();
+
+    $('#filter-button').click(function (event) {
+        event.preventDefault();
         var allCategories = $("option.filter-opt");
         var selectedOptions = $filterMenu.find("option:selected");
         var selectedValues = selectedOptions.map(function () {
@@ -256,7 +256,7 @@ $(document).ready(function () {
         if (allCategories.length === selectedOptions.length) {
             msg = "Showing events from all categories";
             var $alertDiv = generateAlert("success", msg, "search-result");
-            showAllEvents($alertDiv);
+            showAllEvents(event, $alertDiv);
         } else {
             $.ajax({
                 type: "POST",
@@ -281,8 +281,8 @@ $(document).ready(function () {
         $filterMenu.selectpicker('deselectAll');
     });
 
-    $tableBody.on("click", ".view", function (e) {
-        e.preventDefault();
+    $tableBody.on("click", ".view", function (event) {
+        event.preventDefault();
         var route = "/event/" + this.id;
         $currentlyOpened.hideToLoader();
 
@@ -297,8 +297,8 @@ $(document).ready(function () {
             });
     });
 
-    $tableBody.on("click", ".edit", function (e) {
-        e.preventDefault();
+    $tableBody.on("click", ".edit", function (event) {
+        event.preventDefault();
         var route = "event/" + this.id;
         $eventForm.prop('action', "protected/" + route);
         $eventForm.prop('method', "PUT");
@@ -317,8 +317,8 @@ $(document).ready(function () {
     });
 
 
-    $tableBody.on("click", ".delete", function (e) {
-        e.preventDefault();
+    $tableBody.on("click", ".delete", function (event) {
+        event.preventDefault();
         var route = "protected/event/" + this.id;
         var r = confirm("Are you sure you want to delete event " + this.text);
         var currentNode = $(this);
@@ -336,12 +336,12 @@ $(document).ready(function () {
         }
     });
 
-    $("#filter-well").on("click", ".back-anchor", function () {
-        showAllEvents();
+    $("#filter-well").on("click", ".back-anchor", function (event) {
+        showAllEvents(event);
     });
 
-    $alertBox.on("click", ".reset-mode", function (e) {
-        e.preventDefault();
+    $alertBox.on("click", ".reset-mode", function (event) {
+        event.preventDefault();
         resetMode();
     });
 
@@ -353,11 +353,11 @@ $(document).ready(function () {
         $currentMode = "view";
     }
 
-    $searchBox.on('keydown', function (e) {
+    $searchBox.on('keydown', function (event) {
         var $button = $("#search-button");
-        if (e.which === 13 && $(this).val()) {
+        if (event.which === 13 && $(this).val()) {
             $button.click();
-            e.preventDefault();
+            event.preventDefault();
             return false;
 
         }
@@ -371,8 +371,8 @@ $(document).ready(function () {
 
     });
 
-    $("#search-button").click(function (e) {
-        e.preventDefault();
+    $("#search-button").click(function (event) {
+        event.preventDefault();
         var searchPhrase = $searchBox.val();
         var route = "/event/find/" + searchPhrase;
         $searchBox.val('');
@@ -409,7 +409,7 @@ $(document).ready(function () {
         return false;
     });
 
-    function showAllEvents(msg) {
+    function showAllEvents(event, msg) {
         event.preventDefault();
         var route = "/event/all";
         $currentlyOpened.hideToLoader();
