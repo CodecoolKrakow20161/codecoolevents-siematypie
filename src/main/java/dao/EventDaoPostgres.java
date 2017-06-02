@@ -62,7 +62,7 @@ public class EventDaoPostgres implements EventDao {
 
     @Override
     public List<Event> getAll() {
-        String query = "select * from events";
+        String query = "select * from events order by date";
         Table t;
         try (Connection con = sql2o.open()) {
             t = con.createQuery(query).executeAndFetchTable();
