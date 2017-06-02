@@ -13,11 +13,7 @@ import utils.JWTGenerator;
 import utils.JsonTransformer;
 import utils.ResponseError;
 import models.Category;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-
 
 import  static spark.Spark.*;
 
@@ -43,8 +39,8 @@ public class Main {
         });
 
         post("protected/event/add","application/json", ((req, res) -> {
-            String name = Jsoup.clean(req.queryParams("name"), Whitelist.basic());
-            String date = Jsoup.clean(req.queryParams("date"), Whitelist.basic());
+            String name = Jsoup.clean(req.queryParams("name"), Whitelist.none());
+            String date = Jsoup.clean(req.queryParams("date"), Whitelist.none());
             String desc = Jsoup.clean(req.queryParams("desc"), Whitelist.basic());
             Integer catId = Integer.parseInt(req.queryParams("catId"));
             Category category = new CategoryDaoPostgres().getById(catId);
@@ -58,7 +54,7 @@ public class Main {
 
 
         post("protected/category/add","application/json", ((req, res) ->
-                CategoryController.addCategory(Jsoup.clean(req.queryParams("name"), Whitelist.basic()))));
+                CategoryController.addCategory(Jsoup.clean(req.queryParams("name"), Whitelist.none()))));
 
         post("/event/filter", ((req, res) -> {
             List<Integer> lst = new JsonTransformer().parseToList(req.body(), Integer.class);
