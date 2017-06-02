@@ -86,8 +86,8 @@ public class Main {
         put("protected/event/:id", "application/json", (req, res) -> {
             String stringId = req.params(":id");
             Integer id = Integer.parseInt(stringId);
-            String name = Jsoup.clean(req.queryParams("name"), Whitelist.basic());
-            String date = Jsoup.clean(req.queryParams("date"), Whitelist.basic());
+            String name = Jsoup.clean(req.queryParams("name"), Whitelist.none());
+            String date = Jsoup.clean(req.queryParams("date"), Whitelist.none());
             String desc = Jsoup.clean(req.queryParams("desc"), Whitelist.basic());
             Integer catId = Integer.parseInt(req.queryParams("catId"));
             Category category = new CategoryDaoPostgres().getById(catId);
