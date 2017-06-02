@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>Bootstrap Example</title>
+    <title>Codecool Event Calendar</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Latest compiled and minified CSS -->
@@ -103,12 +103,12 @@
 
 <div class="container" id="blackboard">
 
+    <div id="message-box"></div>
+
     <div id="loading" class="text-center">
         <img src="img/animal.gif" th:src="@{img/animal.gif}"/>
     </div>
-
-    <div id="message-box"></div>
-
+    
     <div class="row">
         <div class="col-sm-12">
             <div th:switch="${eventContainer.isEmpty()}" id="event-table" class="hide-on-ajax">
