@@ -33,6 +33,10 @@ $(document).ready(function () {
         }
     };
 
+    $("#jumbo-header").click(function () {
+       showAllEvents();
+    });
+
     function checkSession() {
         var tokenExpDate = Date.parse(localStorage.getItem('tokenExpirationDate'));
         var sessionTimeLeft = tokenExpDate - new Date();
@@ -423,6 +427,7 @@ $(document).ready(function () {
 
     $(".data-dismiss").click(function () {
         $(this).closest(".dismissable").hide();
+        // showAllEvents();
         $table.showAsCurrent();
     });
 
@@ -517,11 +522,15 @@ function populateEventData(event) {
 function populateEventForm(event) {
     var dateArray = event.date.split("-");
     var formDate = dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0];
+    var categorySelect = $("#categories");
+    categorySelect.find("option:selected").removeAttr("selected");
 
     $('#name-input').val(event.name);
     $("#date-input").val(formDate);
     $("#desc-input").val(event.description);
-    $('#event-form').find('option[value=' + event.description.id + ']').prop('selected', true)
+    var toSelect = categorySelect.find('option[value=' + event.category.id + ']');
+    toSelect.prop('selected',true);
+
 }
 
 function resetEventForm(){
