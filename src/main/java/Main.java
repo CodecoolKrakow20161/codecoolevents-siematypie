@@ -6,6 +6,8 @@ import dao.CategoryDaoPostgres;
 import dao.PostgressConnectionHelper;
 import io.jsonwebtoken.JwtException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
 import org.jsoup.safety.Whitelist;
 import spark.Request;
 import spark.Response;
@@ -39,9 +41,11 @@ public class Main {
         });
 
         post("protected/event/add","application/json", ((req, res) -> {
-            String name = Jsoup.clean(req.queryParams("name"), Whitelist.none());
+            Document.OutputSettings out = new Document.OutputSettings().escapeMode(Entities.EscapeMode.xhtml);
+            String name = Jsoup.clean(req.queryParams("name"),"", Whitelist.simpleText(), out);
             String date = Jsoup.clean(req.queryParams("date"), Whitelist.none());
-            String desc = Jsoup.clean(req.queryParams("desc"), Whitelist.basic());
+            String desc = Jsoup.clean(req.queryParams("desc"), "", Whitelist.basic(), out);
+
             Integer catId = Integer.parseInt(req.queryParams("catId"));
             Category category = new CategoryDaoPostgres().getById(catId);
 
@@ -91,11 +95,13 @@ public class Main {
         });
 
         put("protected/event/:id", "application/json", (req, res) -> {
+            Document.OutputSettings out = new Document.OutputSettings().escapeMode(Entities.EscapeMode.xhtml);
+
             String stringId = req.params(":id");
             Integer id = Integer.parseInt(stringId);
-            String name = Jsoup.clean(req.queryParams("name"), Whitelist.none());
+            String name = Jsoup.clean(req.queryParams("name"),"", Whitelist.none(),out);
             String date = Jsoup.clean(req.queryParams("date"), Whitelist.none());
-            String desc = Jsoup.clean(req.queryParams("desc"), Whitelist.basic());
+            String desc = Jsoup.clean(req.queryParams("desc"),"", Whitelist.basic(),out);
             Integer catId = Integer.parseInt(req.queryParams("catId"));
             Category category = new CategoryDaoPostgres().getById(catId);
 
