@@ -69,4 +69,12 @@ public class CategoryDaoPostgres implements CategoryDao {
             return con.createQuery(query).addParameter("name", name).executeScalar(Boolean.class);
         }
     }
+
+    @Override
+    public void delete(Integer id) {
+        String query = "delete from categories where id = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query).addParameter("id", id).executeUpdate();
+        }
+    }
 }
