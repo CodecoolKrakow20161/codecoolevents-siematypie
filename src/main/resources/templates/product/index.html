@@ -112,7 +112,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div th:switch="${eventContainer.isEmpty()}" id="event-table" class="hide-on-ajax">
-                <h1>UPCOMING EVENTS</h1>
+
+                <h1>UPCOMING EVENTS    <small>temporary admin account login: admin pass: codecool</small></h1>
                 <div id="filter-well" class="text-center">
                 </div>
                 <h1 th:case="true" id="no-events">There are no declared events yet!</h1>
